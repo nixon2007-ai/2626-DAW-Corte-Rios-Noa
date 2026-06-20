@@ -1,0 +1,54 @@
+body{
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.hero{
+    background: linear-gradient(
+        rgba(0,0,0,0.6),
+        rgba(0,0,0,0.6)
+    ),
+    url("fondo.jpg");
+
+    background-size: cover;
+    background-position: center;
+    padding: 120px 20px;
+}
+
+.logo{
+    width: 550px;
+    margin-bottom: 20px;
+}
+
+.card{
+    transition: 0.4s;
+}
+
+.card:hover{
+    transform: translateY(-8px);
+}
+
+footer{
+    margin-top: 0;
+}
+
+img{
+    border-radius: 10px;
+}
+
+.btn{
+    border-radius: 25px;
+}
+
+/* Media Query */
+
+@media (max-width:768px){
+
+    .hero h1{
+        font-size: 2rem;
+    }
+
+    .hero{
+        padding: 70px 15px;
+    }
+
+}
