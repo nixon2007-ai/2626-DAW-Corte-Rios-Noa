@@ -3,52 +3,78 @@ body{
 }
 
 .hero{
-    background: linear-gradient(
-        rgba(0,0,0,0.6),
-        rgba(0,0,0,0.6)
-    ),
-    url("fondo.jpg");
-
+    background-image: url("prinfon.png");
     background-size: cover;
     background-position: center;
-    padding: 120px 20px;
+    padding: 100px 0;
 }
 
 .logo{
-    width: 550px;
-    margin-bottom: 20px;
+    width: 450px;
 }
 
 .card{
-    transition: 0.4s;
+    transition: transform .4s ease, box-shadow .4s ease;
+    border-radius:10px;
 }
 
 .card:hover{
-    transform: translateY(-8px);
-}
-
-footer{
-    margin-top: 0;
-}
-
-img{
-    border-radius: 10px;
+    transform: translateY(-20px);
+    background-color: rgb(206, 206, 202);
 }
 
 .btn{
-    border-radius: 25px;
+    border-radius: 20px;
 }
 
-/* Media Query */
+#lista .card{
+    border-left: 5px solid green;
+}
 
-@media (max-width:768px){
+@media(max-width:768px){
 
-    .hero h1{
-        font-size: 2rem;
-    }
+.hero{
+padding: 50px 10px;
+}
 
-    .hero{
-        padding: 70px 15px;
-    }
+.hero h1{
+font-size: 2rem;
+}
+
+}
+/* BOTÓN VOLVER ARRIBA */
+
+#btnArriba{
+
+position:fixed;
+bottom:20px;
+right:20px;
+
+width:50px;
+height:50px;
+
+border:none;
+border-radius:50%;
+
+background:#198754;
+color:white;
+
+font-size:22px;
+
+cursor:pointer;
+
+display:none;
+
+transition:.3s;
+
+z-index:1000;
+
+}
+
+#btnArriba:hover{
+
+transform:scale(1.1);
+
+background:#146c43;
 
 }
