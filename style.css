@@ -78,3 +78,19 @@ transform:scale(1.1);
 background:#146c43;
 
 }
+.text-danger{
+    font-size:14px;
+    margin-top:5px;
+}
+
+#listaRegistros .card{
+    margin-top:15px;
+}
+
+.is-valid{
+    border:2px solid #198754 !important;
+}
+
+.is-invalid{
+    border:2px solid #dc3545 !important;
+}

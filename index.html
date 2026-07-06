@@ -307,37 +307,67 @@ Refrescante mezcla de ron, jugo de coco, guanábana y esencia de hierba luisa, c
                 <div class="col-md-6">
 
 <form id="formContacto">
+    <div id="mensajeGeneral"></div>
     <div class="mb-3">
-        <input type="text"
-            name="Nombre"
-            class="form-control"
-            placeholder="Nombre"
-            required>
+        <input
+        type="text"
+        id="nombre"
+        name="Nombre"
+        class="form-control"
+        placeholder="Nombre">
+    <div id="errorNombre" class="text-danger"></div>
     </div>
 
     <div class="mb-3">
-        <input type="email"
-            name="Correo"
-            class="form-control"
-            placeholder="Correo Electrónico"
-            required>
+        <input
+        type="email"
+        id="correo"
+        name="Correo"
+        class="form-control"
+        placeholder="Correo Electrónico">
+        <div id="errorCorreo" class="text-danger"></div>
+
     </div>
 
     <div class="mb-3">
-        <input type="text"
-            name="Asunto"
-            class="form-control"
-            placeholder="Asunto"
-            required>
+       <input
+        type="text"
+        id="asunto"
+        name="Asunto"
+        class="form-control"
+        placeholder="Asunto">
+
+<div id="errorAsunto" class="text-danger"></div>
+
+<div class="mb-3">
+
+    <select id="categoria" class="form-select">
+
+        <option value="">
+            Seleccione una categoría
+        </option>
+
+        <option>Reserva</option>
+        <option>Consulta</option>
+        <option>Sugerencia</option>
+
+    </select>
+
+    <div id="errorCategoria" class="text-danger"></div>
+
+</div>
+
     </div>
 
     <div class="mb-3">
-        <textarea
-            name="Mensaje"
-            class="form-control"
-            rows="5"
-            placeholder="Mensaje"
-            required></textarea>
+       <textarea
+       id="mensaje"
+       name="Mensaje"
+       class="form-control"
+       rows="5"
+       placeholder="Mensaje"></textarea>
+
+<div id="errorMensaje" class="text-danger"></div>
     </div>
 
     <button type="submit" class="btn btn-success">
@@ -345,7 +375,15 @@ Refrescante mezcla de ron, jugo de coco, guanábana y esencia de hierba luisa, c
     </button>
 
 </form>
-                </div>
+<hr>
+
+<h4>
+Solicitudes Registradas:
+<span id="contador">0</span>
+</h4>
+
+<div id="listaRegistros"></div>
+</div>
 
 <div class="col-md-6">
 
