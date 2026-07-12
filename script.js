@@ -50,29 +50,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
     });
-/*
-    // ================================
-    // 3. Animación de tarjetas
-    // ================================
-
-    const tarjetas = document.querySelectorAll(".card");
-
-    tarjetas.forEach((card, index)=>{
-
-        card.style.opacity = "40";
-        card.style.transform = "translateY(40px)";
-
-        setTimeout(()=>{
-
-            card.style.transition = "0.8s";
-
-            card.style.opacity = "1";
-            card.style.transform = "translateY(0)";
-
-        }, index * 200);
-
-    }); 
-*/
 
     // ================================
     // 4. Validación del formulario
