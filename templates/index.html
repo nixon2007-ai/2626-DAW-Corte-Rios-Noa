@@ -1,0 +1,331 @@
+{% extends "base.html" %}
+
+{% block title %}Mar & Selva Gastrobar - Inicio{% endblock %}
+
+{% block content %}
+
+<!-- INICIO -->
+<section class="bienvenida-section">
+    <div class="bienvenida-container">
+        <!-- Columna de Texto -->
+        <div class="bienvenida-content">
+            <span class="subtitulo-badge">Bienvenidos al Gastrobar más grande de Machala</span>
+            <h1><strong>Sabores que unen la Costa y la Amazonía</strong></h1>
+            <p>
+                Somos un emprendimiento gastronómico innovador ubicado en Machala,
+                creado para fusionar lo mejor de dos mundos en una experiencia culinaria única.
+            </p>
+            <div class="bienvenida-botones">
+                <a href="{{ url_for('productos') }}" class="btn-principal">Ver Menú</a>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <img src="{{ url_for('static', filename='img/PLATO1.jpg') }}" alt="Plato principal" class="img-fluid rounded shadow">
+        </div>
+    </div>
+</section>
+
+<hr style="border: none; height: 3px; background-color: #808080;">
+
+<!-- QUIENES SOMOS -->
+<section id="quienes" class="bg-light py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">
+            <strong>Quiénes Somos</strong>
+        </h2>
+        <div class="row align-items-center">
+
+            <div class="col-md-6">
+                <img src="{{ url_for('static', filename='img/nosotrosga.png') }}" alt="Equipo de trabajo" class="img-fluid rounded shadow" width="550">
+            </div>
+
+            <div class="col-md-6">
+                <p>
+                    Mar & Selva Gastrobar fue creado por Nixon Dario Corte Salinas,
+                    Samanta Briggitte Ríos Vivanco y Yoshira Noa Illanes con la finalidad
+                    de innovar la oferta gastronómica en la ciudad de Machala, donde
+                    existe una limitada presencia de restaurantes con enfoque amazónico.
+                    El proyecto se basa en la fusión de ingredientes y técnicas de la
+                    Amazonía con productos del mar, creando propuestas culinarias novedosas,
+                    auténticas y poco exploradas en el mercado local. Su objetivo es ofrecer
+                    una experiencia gastronómica única que revalorice la riqueza culinaria del
+                    Ecuador, promoviendo el uso de insumos nativos y resaltando la identidad
+                    cultural del país.
+                </p>
+                <p>
+                    Además, el gastrobar cuenta con una sólida base administrativa, ya que
+                    cada uno de sus gerentes posee conocimientos en administración y cuenta
+                    con un MBA, lo que garantiza una gestión profesional, estratégica y
+                    orientada al crecimiento sostenible del negocio, convirtiéndolo en una
+                    propuesta innovadora y atractiva tanto para clientes locales como para
+                    turistas.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<hr style="border: none; height: 3px; background-color: #808080;">
+
+<!-- EQUIPO -->
+<section id="Equipo" class="container py-5">
+    <h2 class="text-center mb-5">
+        <strong>Nuestro Equipo</strong>
+    </h2>
+    <div class="row">
+
+        <!-- TARJETA 1 SAMANTA -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100 shadow">
+                <img src="{{ url_for('static', filename='img/fotosamy.png') }}" class="card-img-top" alt="samy">
+                <div class="card-body">
+                    <h5 class="card-title"><strong>Gerente General</strong></h5>
+                    <p class="card-text">Samanta Briggitte Rios Vivanco</p>
+                    <div class="mt-3">
+                        <button class="btn btn-secondary btn-sm rounded-pill fw-bold px-4" type="button" data-bs-toggle="modal" data-bs-target="#modalGerenteGeneral">
+                            Formación Académica
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VENTANA MODAL DE SAMANTA -->
+        <div class="modal fade" id="modalGerenteGeneral" tabindex="-1" aria-labelledby="modalGerenteGeneralLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold" id="modalGerenteGeneralLabel"> Samanta Brigitte Ríos Vivanco</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-muted fw-bold mb-3">Gerente General</p>
+                        <div class="mb-3">
+                            <p class="mb-1"><strong> Título de Grado:</strong> Licenciatura en Administración de Empresas</p>
+                            <p class="text-secondary ps-3 mb-0"><small>Universidad: Universidad San Francisco de Quito (USFQ)</small></p>
+                        </div>
+                        <div class="mb-2">
+                            <p class="mb-1"><strong> Posgrado:</strong> Maestría en Administración de Empresas (MBA)</p>
+                            <p class="text-secondary ps-3 mb-0"><small>Universidad: Universidad de Especialidades Espíritu Santo (UEES)</small></p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TARJETA 2 NIXON -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100 shadow">
+                <img src="{{ url_for('static', filename='img/foto nixon.png') }}" class="card-img-top" alt="nixon">
+                <div class="card-body">
+                    <h5 class="card-title"><strong>Gerente Administrativo y Financiero</strong></h5>
+                    <p class="card-text">Nixon Dario Corte Salinas</p>
+                    <div class="mt-3">
+                        <button class="btn btn-secondary btn-sm rounded-pill fw-bold px-4" type="button" data-bs-toggle="modal" data-bs-target="#modalGerenteFinanciero">
+                            Formación Académica
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VENTANA MODAL DE NIXON -->
+        <div class="modal fade" id="modalGerenteFinanciero" tabindex="-1" aria-labelledby="modalGerenteFinancieroLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold" id="modalGerenteFinancieroLabel"> Nixon Dario Corte Salinas</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-muted fw-bold mb-3">Gerente Administrativo y Financiero</p>
+                        <div class="mb-3">
+                            <p class="mb-1"><strong> Título de Grado:</strong> Ingeniería en Finanzas y Auditoría</p>
+                            <p class="text-secondary ps-3 mb-0"><small>Universidad: Escuela Superior Politécnica del Litoral (ESPOL)</small></p>
+                        </div>
+                        <div class="mb-2">
+                            <p class="mb-1"><strong> Posgrado:</strong> Maestría en Dirección Financiera</p>
+                            <p class="text-secondary ps-3 mb-0"><small>Universidad: Universidad San Francisco de Quito (USFQ)</small></p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TARJETA 3 YOSHIRA -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100 shadow">
+                <img src="{{ url_for('static', filename='img/fotoyoshira.png') }}" class="card-img-top" alt="Yoshira">
+                <div class="card-body">
+                    <h5 class="card-title"><strong>Gerente Operativo y Comercial</strong></h5>
+                    <p class="card-text">Gricelda Yoshira Noa Illanes</p>
+                    <div class="mt-3">
+                        <button class="btn btn-secondary btn-sm rounded-pill fw-bold px-4" type="button" data-bs-toggle="modal" data-bs-target="#modalGerenteComercial">
+                            Formación Académica
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VENTANA MODAL DE YOSHIRA -->
+        <div class="modal fade" id="modalGerenteComercial" tabindex="-1" aria-labelledby="modalGerenteComercialLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold" id="modalGerenteComercialLabel"> Gricelda Yoshira Noa Illanes</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-muted fw-bold mb-3">Gerente Operativo y Comercial</p>
+                        <div class="mb-3">
+                            <p class="mb-1"><strong> Título de Grado:</strong> Licenciatura en Marketing</p>
+                            <p class="text-secondary ps-3 mb-0"><small>Universidad: Pontificia Universidad Católica del Ecuador (PUCE)</small></p>
+                        </div>
+                        <div class="mb-2">
+                            <p class="mb-1"><strong> Posgrado:</strong> Maestría en Gestión Comercial y Ventas</p>
+                            <p class="text-secondary ps-3 mb-0"><small>Universidad: Universidad de Especialidades Espíritu Santo (UEES)</small></p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<hr style="border: none; height: 3px; background-color: #808080;">
+
+<!-- PRESENTACIÓN CHEFS -->
+<section id="chefs" class="container py-5">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <h2><strong>Los Maestros del Sabor</strong></h2>
+            <p class="card-text">
+                Nuestro equipo de chefs está altamente capacitado y comprometido
+                con la excelencia gastronómica. Con experiencia, creatividad y pasión
+                por la cocina, transformamos ingredientes de calidad en experiencias
+                únicas para nuestros clientes.
+            </p>
+        </div>
+
+        <div class="col-md-6">
+            <img src="{{ url_for('static', filename='img/CHEF.png') }}" alt="Local" class="img-fluid rounded shadow">
+        </div>
+    </div>
+</section>
+
+<hr style="border: none; height: 3px; background-color: #808080;">
+
+<!-- VIDEO SOBRE CONOCE MÁS -->
+<section class="bg-light py-5">
+    <div class="container text-center">
+        <h2><strong>Conoce Más</strong></h2>
+        <div class="ratio ratio-16x9">
+            <iframe src="https://www.youtube.com/embed/lHyhPtdEpaY" allowfullscreen></iframe>
+        </div>
+    </div>
+</section>
+
+<hr style="border: none; height: 3px; background-color: #808080;">
+
+<!-- UBICACIÓN -->
+<div class="container">
+    <h2 class="text-center mb-4">
+        <strong>Dónde Encontrarnos</strong>
+    </h2>
+    <section id="Ubicacion" class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h2><strong>Localízanos en Google Maps de forma rápida y sencilla</strong></h2>
+                <iframe src="https://www.google.com/maps/embed?pb=!4v1786054052530!6m8!1m7!1s6E2DcDfF02UvQMA26Q-rLg!2m2!1d0.08319341488485063!2d-76.89468393118149!3f149.98160636336314!4f0!5f0.7820865974627469"
+                    width="550"
+                    height="365"
+                    style="border:0;"
+                    allowfullscreen=""
+                    loading="lazy"
+                    referrerpolicy="strict-origin-when-cross-origin"></iframe>
+            </div>
+            <div class="col-md-6">
+                <img src="{{ url_for('static', filename='img/croquis.png') }}" alt="Local" class="img-fluid rounded shadow">
+            </div>
+        </div>
+    </section>
+
+    <hr style="border: none; height: 3px; background-color: #808080;">
+
+    <!-- CONTACTO -->
+    <section id="contacto" class="container py-5">
+        <h2 class="text-center mb-4">
+            <strong>Contáctanos</strong>
+        </h2>
+        <div class="row">
+            <div class="col-md-6">
+
+                <form id="formContacto">
+                    <div id="mensajeGeneral"></div>
+                    <div class="mb-3">
+                        <input type="text" id="nombre" name="Nombre" class="form-control" placeholder="Nombre">
+                        <div id="errorNombre" class="text-danger"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <input type="email" id="correo" name="Correo" class="form-control" placeholder="Correo Electrónico">
+                        <div id="errorCorreo" class="text-danger"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <input type="text" id="asunto" name="Asunto" class="form-control" placeholder="Asunto">
+                        <div id="errorAsunto" class="text-danger"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <select id="categoria" class="form-select">
+                            <option value="">Seleccione una categoría</option>
+                            <option>Reserva</option>
+                            <option>Consulta</option>
+                            <option>Sugerencia</option>
+                        </select>
+                        <div id="errorCategoria" class="text-danger"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <textarea id="mensaje" name="Mensaje" class="form-control" rows="5" placeholder="Mensaje"></textarea>
+                        <div id="errorMensaje" class="text-danger"></div>
+                    </div>
+                    <button type="submit" class="btn btn-success">Enviar Mensaje</button>
+                </form>
+
+                <h4>
+                    Solicitudes Registradas:
+                    <span id="contador">0</span>
+                </h4>
+
+                <div id="listaRegistros"></div>
+            </div>
+
+            <div class="col-md-6">
+                <h4><strong>Información</strong></h4>
+                <p><strong>Correo:</strong> Maryselvadaw@gmail.com</p>
+                <p><strong>Teléfono:</strong> 0967282057 / 0987180148 / 0962616248</p>
+                <p><strong>Dirección:</strong> Machala - El Oro - Ecuador</p>
+
+                <a href="https://www.facebook.com/profile.php?id=61593243085513" class="btn btn-primary m-1">Facebook</a>
+                <a href="https://www.instagram.com/maryselvadaw/" class="btn btn-danger m-1">Instagram</a>
+                <a href="https://www.tiktok.com/@maryselva_oficial" class="btn btn-dark m-1">TikTok</a>
+            </div>
+        </div>
+    </section>
+</div>
+
+{% endblock %}

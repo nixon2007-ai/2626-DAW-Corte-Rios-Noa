@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block titulo %}Mar & Selva Gastrobar{% endblock %}</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <!-- LLAMADO A CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <!-- HEADER -->
+    <header class="hero text-center text-white">
+        <div class="container">
+            <img src="{{ url_for('static', filename='img/gastrologoac.png') }}" alt="Logo Mar y Selva" class="logo img-fluid">
+            <h1 class="display-4 fw-bold">Mar & Selva</h1>
+            <p class="lead">"Donde el calor de la selva se encuentra con la frescura del mar"</p>
+            <a href="{{ url_for('index') }}#contacto" class="btn btn-warning btn-lg">Reserva Ahora</a>
+        </div>
+    </header>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="menu">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}#inicio"><strong>Inicio</strong></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}#quienes"><strong>Quiénes Somos</strong></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}#productos"><strong>Menú</strong></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}#contacto"><strong>Contacto</strong></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('productos') }}"><strong>Productos</strong></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('clientes') }}"><strong>Clientes</strong></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('proveedores') }}"><strong>Proveedores</strong></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('facturacion') }}"><strong>Facturación</strong></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Botón flotante de WhatsApp -->
+    <a href="https://wa.me/593967282057" class="btn-flotante" target="_blank" rel="noopener noreferrer">
+        <span class="icono">💬</span> ¡Reserva por WhatsApp!
+    </a>
+
+    <!-- ASIDE -->
+    <aside class="bg-warning text-center p-4">
+        <h3><strong>Promoción Especial</strong></h3>
+        <p><i>Cócteles 2x1 todos los viernes</i>.</p>
+        <p><i>Todos los días Jueves obtienes el 50% de descuento.</i></p>
+        <p><strong>Horario:</strong> Lunes a Domingo de 12h00 a 00h00.</p>
+    </aside>
+
+    <!-- FOOTER -->
+    <footer class="bg-dark text-white text-center p-3">
+        <p>Elaborado por: Nixon Dario Corte Salinas | Samanta Briggite Ríos Vivanco | Yoshira Noa Illanes</p>
+        <p>Desarrollo de Aplicaciones Web - 2026</p>
+    </footer>
+
+    <!-- LLAMADO A JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <button id="btnArriba">↑</button>
+</body>
+
+</html>

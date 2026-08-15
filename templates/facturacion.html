@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Facturación - Mar & Selva Gastrobar{% endblock %}
+
+{% block content %}
+
+<section id="facturacion" class="container py-5">
+
+    <h2 class="text-center mb-4"><strong>Facturación</strong></h2>
+    <p class="text-center text-muted mb-5">
+        Facturas de venta registradas. Datos de ejemplo mientras se integra la base de datos.
+    </p>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle shadow-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>N° Factura</th>
+                    <th>Cliente</th>
+                    <th>Detalle</th>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>001-001-000000123</td>
+                    <td>María Fernanda Vélez</td>
+                    <td>2 Selvático de Paiche, 1 Cóctel Brisa del Oriente</td>
+                    <td>10/08/2026</td>
+                    <td>$28.00</td>
+                </tr>
+                <tr>
+                    <td>001-001-000000124</td>
+                    <td>Carlos Andrés Loor</td>
+                    <td>1 Verde con Cecina Ahumada, 2 Cóctel Selva Dorada</td>
+                    <td>08/08/2026</td>
+                    <td>$33.00</td>
+                </tr>
+                <tr>
+                    <td>001-001-000000125</td>
+                    <td>Génesis Paola Castro</td>
+                    <td>3 Bolón de Yuca Relleno de Maito</td>
+                    <td>02/08/2026</td>
+                    <td>$18.00</td>
+                </tr>
+                <tr>
+                    <td>001-001-000000126</td>
+                    <td>Jorge Luis Sánchez</td>
+                    <td>1 Costillas Glaseadas, 1 Arroz Meloso del Manglar</td>
+                    <td>05/08/2026</td>
+                    <td>$19.00</td>
+                </tr>
+                <tr>
+                    <td>001-001-000000127</td>
+                    <td>Andrea Nicole Ramírez</td>
+                    <td>2 Ceviche Amazónico de Chontacoco</td>
+                    <td>12/08/2026</td>
+                    <td>$16.00</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr class="table-warning fw-bold">
+                    <td colspan="4" class="text-end">Total General</td>
+                    <td>$114.00</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+</section>
+
+{% endblock %}

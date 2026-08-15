@@ -1,0 +1,430 @@
+/* TIPO DE LETRA */
+
+body {
+    font-family: Arial, sans-serif;
+
+}
+
+
+
+
+.bienvenida-section {
+    padding: 60px 20px;
+    background-color: #faf9f6; /* Un tono crema suave o blanco cálido */
+}
+
+.bienvenida-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    flex-wrap: wrap; /* Se adapta a celulares */
+}
+
+.bienvenida-content {
+    flex: 1;
+    min-width: 300px;
+}
+
+.subtitulo-badge {
+    display: inline-block;
+    background-color: #e6f4ea;
+    color: #137333;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.bienvenida-content h1 {
+    font-size: 2.5rem;
+    color: #1a1a1a;
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
+
+.bienvenida-content p {
+    font-size: 1.1rem;
+    color: #555555;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+
+.bienvenida-botones {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-principal {
+    background-color: #1e7e34; /* Verde acorde a la selva */
+    color: #ffffff;
+    padding: 12px 25px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.3s ease;
+}
+
+.btn-principal:hover {
+    background-color: #155724;
+}
+
+.btn-secundario {
+    background-color: transparent;
+    color: #1e7e34;
+    border: 2px solid #1e7e34;
+    padding: 12px 25px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-secundario:hover {
+    background-color: #1e7e34;
+    color: #ffffff;
+}
+
+
+
+/* HERO */
+
+.hero {
+    background-image: url("../img/entrada.png");
+    background-size: cover;
+    background-position: center;
+    padding: 100px 0;
+}
+
+
+
+/* =========================
+   LOGO
+========================= */
+
+.logo {
+    width: 450px;
+}
+
+/* =========================
+   TARJETAS GENERALES
+========================= */
+
+.card {
+    transition: transform .4s ease, box-shadow .4s ease;
+    border-radius: 10px;
+    margin: auto;
+}
+
+
+/* EFECTO AL PASAR EL MOUSE */
+
+.card:hover {
+    transform: translateY(-10px);
+    background-color: rgb(206, 206, 202);
+}
+
+
+/* CUERPO DE LAS TARJETAS */
+
+.card-body {
+    text-align: center;
+}
+
+
+/* =========================
+   BOTONES
+========================= */
+
+.btn {
+    border-radius: 20px;
+}
+
+
+/* ==================================================
+   PRODUCTOS Y SERVICIOS
+   4 TARJETAS POR FILA
+================================================== */
+
+#productos .card {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+
+/* IMÁGENES DE PRODUCTOS */
+
+#productos .card-img-top {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+}
+
+
+/* TÍTULOS DE PRODUCTOS */
+
+#productos .card-title {
+    width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+
+/* DESCRIPCIÓN DE PRODUCTOS */
+
+#productos .card-text {
+    width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+
+/* ASEGURAR 4 COLUMNAS EN COMPUTADORA */
+
+@media (min-width: 992px) {
+
+    #productos .col-lg-3 {
+        width: 25%;
+    }
+
+}
+
+
+/* =========================
+   NUESTRO EQUIPO
+========================= */
+
+#equipo .card {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+
+/* IMÁGENES DEL EQUIPO */
+
+#equipo .card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+}
+
+
+/* CONTENIDO DEL EQUIPO */
+
+#equipo .card-body {
+    text-align: center;
+    padding: 18px;
+}
+
+
+/* TÍTULO DEL EQUIPO */
+
+#equipo .card-title {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+
+/* NOMBRE DEL EQUIPO */
+
+#equipo .card-text {
+    font-size: 16px;
+}
+
+
+/* =========================
+   LISTA
+========================= */
+
+#lista .card {
+    border-left: 5px solid green;
+}
+
+
+/* =========================
+   BOTÓN VOLVER ARRIBA
+========================= */
+
+#btnArriba {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 50%;
+    background: #198754;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+    display: none;
+    transition: .3s;
+    z-index: 1000;
+}
+
+
+#btnArriba:hover {
+    transform: scale(1.1);
+    background: #146c43;
+}
+
+
+/* =========================
+   MENSAJES DE ERROR
+========================= */
+
+.text-danger {
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+
+/* =========================
+   LISTA DE REGISTROS
+========================= */
+
+#listaRegistros .card {
+    margin-top: 15px;
+}
+
+
+/* =========================
+   VALIDACIONES
+========================= */
+
+.is-valid {
+    border: 2px solid #198754 !important;
+}
+
+.is-invalid {
+    border: 2px solid #dc3545 !important;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+
+    .hero {
+        padding: 50px 10px;
+    }
+
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    .logo {
+        width: 300px;
+        max-width: 90%;
+    }
+
+}
+
+
+/* =========================
+   PRODUCTOS EN TABLET
+========================= */
+
+@media (min-width: 768px) and (max-width: 991px) {
+
+    #productos .col-md-6 {
+        width: 50%;
+    }
+
+}
+
+
+/* =========================
+   PRODUCTOS EN CELULAR
+========================= */
+
+@media (max-width: 767px) {
+
+    #productos .col-lg-3,
+    #productos .col-md-6 {
+        width: 100%;
+    }
+
+}
+
+
+.btn-flotante {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #25d366;
+    color: white;
+    text-decoration: none;
+    padding: 15px 20px;
+    border-radius: 50px;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    font-size: 14px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.btn-flotante:hover {
+    background-color: #128c7e;
+    transform: scale(1.05);
+}
+
+.btn-flotante .icono {
+    font-size: 18px;
+}
+
+@media (max-width: 480px) {
+    .btn-flotante {
+        bottom: 15px;
+        right: 15px;
+        padding: 12px 15px;
+        font-size: 12px;
+    }
+}
+
+.btn-flotante {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #25d366;
+    color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 999999 !important;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-flotante:hover {
+    background-color: #20ba5a;
+    color: #ffffff;
+    transform: translateY(-3px);
+    box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.btn-flotante .icono {
+    font-size: 20px;
+}
