@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block titulo %}Iniciar Sesión{% endblock %}
+
+{% block content %}
+<section class="login-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="card shadow login-card">
+                    <div class="card-body p-4">
+                        <h2 class="text-center mb-2"><strong>Ingresar al Sistema</strong></h2>
+                        <p class="text-center text-muted mb-4">Mar & Selva Gastrobar - Panel Interno</p>
+
+                        <div id="mensajeLogin"></div>
+
+                        <form id="formLogin">
+                            <div class="mb-3">
+                                <label for="usuario" class="form-label fw-bold">Usuario</label>
+                                <input type="text" id="usuario" class="form-control" placeholder="Ingrese su usuario">
+                                <div id="errorUsuario" class="text-danger"></div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="contrasena" class="form-label fw-bold">Contraseña</label>
+                                <input type="password" id="contrasena" class="form-control" placeholder="Ingrese su contraseña">
+                                <div id="errorContrasena" class="text-danger"></div>
+                            </div>
+
+                            <button type="submit" class="btn btn-login w-100 fw-bold">Iniciar Sesión</button>
+                        </form>
+
+                        
+
+                        <div class="text-center mt-3">
+                            <a href="{{ url_for('index') }}" class="link-volver">← Volver al sitio principal</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

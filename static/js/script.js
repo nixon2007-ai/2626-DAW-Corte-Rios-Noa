@@ -1,5 +1,130 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+    // FORMULARIO DE LOGIN (Ingresar al Sistema)
+    const formLogin = document.getElementById("formLogin");
+
+    if (formLogin) {
+        const usuario = document.getElementById("usuario");
+        const contrasena = document.getElementById("contrasena");
+        const mensajeLogin = document.getElementById("mensajeLogin");
+
+        // Usuarios y contraseñas de prueba (demostrativos, sin base de datos)
+        const USUARIOS_VALIDOS = [
+            { usuario: "yg.noai@maryselva.ec", contrasena: "yg.noai" },
+            { usuario: "nd.cortes@maryselva.ec", contrasena: "nd.cortes" },
+            { usuario: "sb.riosv@maryselva.ec", contrasena: "sb.riosv" }
+        ];
+
+        formLogin.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            document.getElementById("errorUsuario").textContent = "";
+            document.getElementById("errorContrasena").textContent = "";
+
+            let valido = true;
+
+            if (usuario.value.trim() === "") {
+                document.getElementById("errorUsuario").textContent = "Ingrese su usuario";
+                valido = false;
+            }
+
+            if (contrasena.value.trim() === "") {
+                document.getElementById("errorContrasena").textContent = "Ingrese su contraseña";
+                valido = false;
+            }
+
+            if (!valido) {
+                return;
+            }
+
+            const coincide = USUARIOS_VALIDOS.some(
+                u => u.usuario === usuario.value && u.contrasena === contrasena.value
+            );
+
+            if (coincide) {
+                sessionStorage.setItem("sesionActiva", "true");
+                sessionStorage.setItem("usuarioActivo", usuario.value);
+
+                mensajeLogin.innerHTML = `
+                    <div class="alert alert-success">
+                        Acceso correcto. Ingresando al panel...
+                    </div>
+                `;
+                setTimeout(() => {
+                    window.location.href = "/panel";
+                }, 800);
+            } else {
+                mensajeLogin.innerHTML = `
+                    <div class="alert alert-danger">
+                        Usuario o contraseña inválida.
+                    </div>
+                `;
+            }
+        });
+    }
+
+    // PROTECCIÓN Y CIERRE DE SESIÓN DEL PANEL
+    const nombreUsuario = document.getElementById("nombreUsuario");
+    const btnCerrarSesion = document.getElementById("btnCerrarSesion");
+
+    if (btnCerrarSesion) {
+        // Si no hay sesión activa, no deja ver el panel y regresa al login
+        if (sessionStorage.getItem("sesionActiva") !== "true") {
+            window.location.href = "/login";
+        } else {
+            nombreUsuario.textContent = sessionStorage.getItem("usuarioActivo");
+        }
+
+        btnCerrarSesion.addEventListener("click", () => {
+            sessionStorage.removeItem("sesionActiva");
+            sessionStorage.removeItem("usuarioActivo");
+            window.location.href = "/";
+        });
+    }
+
+    // MENÚ DE ACCESIBILIDAD
+    const btnAccesibilidad = document.getElementById("btnAccesibilidad");
+    const menuAccesibilidad = document.getElementById("menuAccesibilidad");
+    let tamanoTexto = 100; // porcentaje inicial
+
+    if (btnAccesibilidad && menuAccesibilidad) {
+        btnAccesibilidad.addEventListener("click", () => {
+            menuAccesibilidad.classList.toggle("d-none");
+        });
+
+        // Cierra el menú si se hace clic afuera
+        document.addEventListener("click", (e) => {
+            if (!menuAccesibilidad.contains(e.target) && e.target !== btnAccesibilidad && !btnAccesibilidad.contains(e.target)) {
+                menuAccesibilidad.classList.add("d-none");
+            }
+        });
+
+        document.querySelectorAll(".opcion-accesibilidad").forEach(boton => {
+            boton.addEventListener("click", () => {
+                const accion = boton.getAttribute("data-accion");
+
+                if (accion === "aumentar") {
+                    tamanoTexto = Math.min(tamanoTexto + 10, 150);
+                    document.documentElement.style.fontSize = tamanoTexto + "%";
+                }
+
+                if (accion === "reducir") {
+                    tamanoTexto = Math.max(tamanoTexto - 10, 80);
+                    document.documentElement.style.fontSize = tamanoTexto + "%";
+                }
+
+                if (accion === "contraste") {
+                    document.body.classList.toggle("alto-contraste");
+                }
+
+                if (accion === "restablecer") {
+                    tamanoTexto = 100;
+                    document.documentElement.style.fontSize = "100%";
+                    document.body.classList.remove("alto-contraste");
+                }
+            });
+        });
+    }
 
     // SCROLL SUAVE DEL MENÚ
     const enlaces = document.querySelectorAll('a[href^="#"]');

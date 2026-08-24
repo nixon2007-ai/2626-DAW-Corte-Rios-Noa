@@ -362,69 +362,287 @@ body {
 }
 
 
+/* =========================
+   BOTÓN FLOTANTE DE WHATSAPP (redondo, lado derecho)
+========================= */
+
 .btn-flotante {
     position: fixed;
     bottom: 20px;
     right: 20px;
+    width: 60px;
+    height: 60px;
     background-color: #25d366;
-    color: white;
-    text-decoration: none;
-    padding: 15px 20px;
-    border-radius: 50px;
-    font-family: Arial, sans-serif;
-    font-weight: bold;
-    font-size: 14px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
+    border-radius: 50%;
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 999999;
     transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
 .btn-flotante:hover {
-    background-color: #128c7e;
-    transform: scale(1.05);
+    background-color: #20ba5a;
+    transform: scale(1.08);
+    box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.4);
 }
 
-.btn-flotante .icono {
-    font-size: 18px;
+.icono-whatsapp {
+    width: 32px;
+    height: 32px;
 }
 
 @media (max-width: 480px) {
     .btn-flotante {
         bottom: 15px;
         right: 15px;
-        padding: 12px 15px;
-        font-size: 12px;
+        width: 52px;
+        height: 52px;
+    }
+
+    .icono-whatsapp {
+        width: 28px;
+        height: 28px;
     }
 }
 
-.btn-flotante {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #25d366;
-    color: #ffffff;
-    padding: 12px 20px;
-    border-radius: 50px;
-    text-decoration: none;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    z-index: 999999 !important;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
+
+/* =========================
+   BOTÓN "INGRESAR AL SISTEMA" EN NAVBAR
+========================= */
+
+.btn-ingresar {
+    background-color: #f0ad4e;
+    color: #1a1a1a !important;
+    border-radius: 20px;
+    padding: 6px 16px !important;
+    margin-left: 8px;
+    transition: background 0.3s ease;
 }
 
-.btn-flotante:hover {
-    background-color: #20ba5a;
+.btn-ingresar:hover {
+    background-color: #ffc107;
+    color: #1a1a1a !important;
+}
+
+
+/* =========================
+   PÁGINA DE LOGIN
+========================= */
+
+.login-section {
+    background-color: #faf9f6;
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+}
+
+.login-card {
+    border: none;
+    border-radius: 16px;
+    border-top: 6px solid #1e7e34;
+}
+
+.btn-login {
+    background-color: #1e7e34;
     color: #ffffff;
-    transform: translateY(-3px);
+    border-radius: 8px;
+    padding: 10px;
+    transition: background 0.3s ease;
+}
+
+.btn-login:hover {
+    background-color: #155724;
+    color: #ffffff;
+}
+
+.link-volver {
+    color: #1e7e34;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.link-volver:hover {
+    color: #155724;
+    text-decoration: underline;
+}
+
+
+/* =========================
+   PANEL DEL SISTEMA (4 rutas)
+========================= */
+
+.panel-section {
+    background-color: #faf9f6;
+    min-height: 70vh;
+}
+
+.panel-card {
+    display: block;
+    text-decoration: none;
+    color: #1a1a1a;
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 35px 20px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    border-bottom: 5px solid transparent;
+}
+
+.panel-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+    color: #1a1a1a;
+}
+
+.panel-card p {
+    color: #666666;
+    margin-bottom: 0;
+}
+
+.panel-icono {
+    font-size: 42px;
+    margin-bottom: 10px;
+}
+
+.panel-card-1 { border-bottom-color: #1e7e34; }
+.panel-card-2 { border-bottom-color: #f0ad4e; }
+.panel-card-3 { border-bottom-color: #0d6efd; }
+.panel-card-4 { border-bottom-color: #dc3545; }
+
+
+/* =========================
+   BARRA SUPERIOR DEL PANEL (bienvenida + cerrar sesión)
+========================= */
+
+.panel-topbar {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.btn-cerrar-sesion {
+    background-color: #dc3545;
+    color: #ffffff;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: background 0.3s ease;
+}
+
+.btn-cerrar-sesion:hover {
+    background-color: #b02a37;
+    color: #ffffff;
+}
+
+
+/* =========================
+   BOTÓN FLOTANTE DE ACCESIBILIDAD (lado izquierdo)
+========================= */
+
+.btn-accesibilidad {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 60px;
+    height: 60px;
+    background-color: #25d366;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 999999;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.btn-accesibilidad:hover {
+    background-color: #20ba5a;
+    transform: scale(1.08);
     box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.4);
 }
 
-.btn-flotante .icono {
-    font-size: 20px;
+.icono-accesibilidad {
+    width: 30px;
+    height: 30px;
+}
+
+/* MENÚ DESPLEGABLE DE ACCESIBILIDAD */
+
+.menu-accesibilidad {
+    position: fixed;
+    bottom: 90px;
+    left: 20px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.25);
+    padding: 10px;
+    z-index: 999999;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 190px;
+}
+
+.menu-accesibilidad.d-none {
+    display: none;
+}
+
+.opcion-accesibilidad {
+    background-color: #f1f1f1;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.opcion-accesibilidad:hover {
+    background-color: #25d366;
+    color: #ffffff;
+}
+
+/* MODO ALTO CONTRASTE */
+
+body.alto-contraste {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    filter: contrast(1.2);
+}
+
+body.alto-contraste a,
+body.alto-contraste p,
+body.alto-contraste h1,
+body.alto-contraste h2,
+body.alto-contraste h3,
+body.alto-contraste h4,
+body.alto-contraste h5,
+body.alto-contraste span,
+body.alto-contraste li {
+    color: #ffff00 !important;
+}
+
+@media (max-width: 480px) {
+    .btn-accesibilidad {
+        bottom: 15px;
+        left: 15px;
+        width: 52px;
+        height: 52px;
+    }
+
+    .menu-accesibilidad {
+        bottom: 78px;
+        left: 15px;
+    }
 }

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block titulo %}Panel del Sistema{% endblock %}
+
+{% block content %}
+<section class="panel-section py-5">
+    <div class="container">
+        <h2 class="text-center mb-2"><strong>Panel del Sistema</strong></h2>
+        <p class="text-center text-muted mb-5">Selecciona el módulo al que deseas ingresar</p>
+
+        <div class="row justify-content-center g-4">
+
+            <div class="col-lg-3 col-md-6">
+                <a href="{{ url_for('clientes') }}" class="panel-card panel-card-1">
+                    <div class="panel-icono">👥</div>
+                    <h4><strong>Clientes</strong></h4>
+                    <p>Reservas y comensales</p>
+                </a>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <a href="{{ url_for('facturacion') }}" class="panel-card panel-card-2">
+                    <div class="panel-icono">🧾</div>
+                    <h4><strong>Facturación</strong></h4>
+                    <p>Cuentas por mesa</p>
+                </a>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <a href="{{ url_for('productos') }}" class="panel-card panel-card-3">
+                    <div class="panel-icono">🍽️</div>
+                    <h4><strong>Productos</strong></h4>
+                    <p>Menú del gastrobar</p>
+                </a>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <a href="{{ url_for('proveedores') }}" class="panel-card panel-card-4">
+                    <div class="panel-icono">🚚</div>
+                    <h4><strong>Proveedores</strong></h4>
+                    <p>Insumos y contactos</p>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}
