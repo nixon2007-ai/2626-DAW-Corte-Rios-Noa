@@ -4,25 +4,35 @@
 
 {% block content %}
 <section class="container py-5">
-    <h2 class="text-center mb-5"><strong>Menú del Gastrobar</strong></h2>
+    <h2 class="text-center mb-3"><strong>Menú del Gastrobar</strong></h2>
+    <div class="text-center mb-5">
+        <a href="{{ url_for('nuevo_producto') }}" class="btn btn-warning">+ Nuevo producto</a>
+    </div>
 
     {% for cat in categorias %}
     <h3 class="mb-4 mt-5"><strong>{{ cat }}</strong></h3>
     <div class="row">
         {% for p in productos %}
-        {% if p.categoria == cat %}
+        {% if p['categoria'] == cat %}
         <div class="col-lg-3 col-md-6 mb-4">
             <div class="card h-100 shadow">
                 <div class="card-body text-center d-flex flex-column justify-content-between">
                     <div>
-                        <h5 class="card-title"><strong>{{ p.nombre }}</strong></h5>
-                        <p class="card-text">{{ p.descripcion }}</p>
-                        <p class="fw-bold">${{ "%.2f"|format(p.precio) }}</p>
-                        {% if p.estado == "Disponible" %}
-                        <span class="badge bg-success">{{ p.estado }}</span>
+                        <h5 class="card-title"><strong>{{ p['nombre'] }}</strong></h5>
+                        <p class="card-text">{{ p['descripcion'] }}</p>
+                        <p class="fw-bold">${{ "%.2f"|format(p['precio']) }}</p>
+                        {% if p['estado'] == "Disponible" %}
+                        <span class="badge bg-success">{{ p['estado'] }}</span>
                         {% else %}
-                        <span class="badge bg-danger">{{ p.estado }}</span>
+                        <span class="badge bg-danger">{{ p['estado'] }}</span>
                         {% endif %}
+                    </div>
+                    <div class="d-flex gap-2 justify-content-center mt-3">
+                        <a href="{{ url_for('editar_producto', id=p['id']) }}" class="btn btn-sm btn-outline-primary">Editar</a>
+                        <form method="POST" action="{{ url_for('eliminar_producto', id=p['id']) }}" onsubmit="return confirm('¿Seguro que deseas eliminar este producto?');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                        </form>
                     </div>
                 </div>
             </div>
