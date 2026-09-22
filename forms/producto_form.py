@@ -42,4 +42,10 @@ class ProductoForm(FlaskForm):
                     Length(min=10, max=300, message="Debe tener entre 10 y 300 caracteres.")]
     )
 
+    proveedor_id = SelectField(
+        "Proveedor",
+        coerce=int,
+        validators=[DataRequired(message="Seleccione un proveedor.")]
+    )
+
     submit = SubmitField("Guardar producto")

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block titulo %}Iniciar Sesión{% endblock %}
+{% block titulo %}Registro de Usuario{% endblock %}
 
 {% block content %}
 <section class="login-section py-5">
@@ -9,8 +9,8 @@
             <div class="col-md-5">
                 <div class="card shadow login-card">
                     <div class="card-body p-4">
-                        <h2 class="text-center mb-2"><strong>Ingresar al Sistema</strong></h2>
-                        <p class="text-center text-muted mb-4">Mar & Selva Gastrobar - Panel Interno</p>
+                        <h2 class="text-center mb-2"><strong>Crear Usuario</strong></h2>
+                        <p class="text-center text-muted mb-4">Acceso al panel interno</p>
 
                         {% with messages = get_flashed_messages(with_categories=true) %}
                             {% if messages %}
@@ -39,11 +39,19 @@
                                 {% endfor %}
                             </div>
 
+                            <div class="mb-3">
+                                {{ form.confirmar.label(class="form-label fw-bold") }}
+                                {{ form.confirmar(class="form-control" + (" is-invalid" if form.confirmar.errors else "")) }}
+                                {% for error in form.confirmar.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
                             {{ form.submit(class="btn btn-login w-100 fw-bold") }}
                         </form>
 
-                        <div class="text-center mt-2">
-                            <a href="{{ url_for('index') }}" class="link-volver">← Volver al sitio principal</a>
+                        <div class="text-center mt-3">
+                            <a href="{{ url_for('login') }}" class="link-volver">← Ya tengo cuenta, iniciar sesión</a>
                         </div>
                     </div>
                 </div>
