@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, FloatField, TextAreaField, SubmitField
-from wtforms.validators import DataRequired, Length, NumberRange
+from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
 
 class ProductoForm(FlaskForm):
@@ -43,9 +43,9 @@ class ProductoForm(FlaskForm):
     )
 
     proveedor_id = SelectField(
-        "Proveedor",
+        "Proveedor (opcional)",
         coerce=int,
-        validators=[DataRequired(message="Seleccione un proveedor.")]
+        validators=[Optional()]
     )
 
     submit = SubmitField("Guardar producto")
