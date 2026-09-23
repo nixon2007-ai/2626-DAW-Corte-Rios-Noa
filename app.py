@@ -31,56 +31,28 @@ def load_user(user_id):
 
 
 # ---------------------------------------------------------------------------
-# "Bases de datos" temporales en memoria (listas de Python).
-# Clientes, Proveedores y Facturación se migrarán progresivamente.
+# Utilidades para poblar los <select> de los formularios con datos reales
+# de la base de datos (relaciones por clave foránea).
 # ---------------------------------------------------------------------------
-
-lista_clientes = [
-    {"nombre": "María Fernanda López", "correo": "mflopez@gmail.com",
-     "telefono": "0991234567", "tipo": "Frecuente", "mesa_preferida": "Terraza", "reservas": 5},
-    {"nombre": "Carlos Andrés Ramírez", "correo": "caramirez@gmail.com",
-     "telefono": "0987654321", "tipo": "Nuevo", "mesa_preferida": "Salón Interior", "reservas": 1},
-    {"nombre": "Daniela Castillo Pinta", "correo": "dcastillo@gmail.com",
-     "telefono": "0965432198", "tipo": "Frecuente", "mesa_preferida": "Barra", "reservas": 8},
-    {"nombre": "Jorge Luis Vera", "correo": "jlvera@gmail.com",
-     "telefono": "0978965412", "tipo": "Nuevo", "mesa_preferida": "Terraza", "reservas": 2},
-]
-
-lista_proveedores = [
-    {"empresa": "Pesquera del Pacífico S.A.", "insumo": "Mariscos y pescado fresco",
-     "categoria": "Mar", "contacto": "0998765432", "frecuencia": "Semanal"},
-    {"empresa": "AmazonFrut Cía. Ltda.", "insumo": "Frutas amazónicas (arazá, chontaduro, guayusa)",
-     "categoria": "Amazonía", "contacto": "0987651234", "frecuencia": "Quincenal"},
-    {"empresa": "Licores del Litoral", "insumo": "Aguardiente, ron y licores",
-     "categoria": "Bebidas", "contacto": "0965478123", "frecuencia": "Mensual"},
-    {"empresa": "Distribuidora El Oro", "insumo": "Abarrotes y bebidas gaseosas",
-     "categoria": "Abarrotes", "contacto": "0976543210", "frecuencia": "Semanal"},
-]
-
-lista_facturas = [
-    {"numero": "001-001-000000123", "cliente": "María Fernanda López", "mesa": 4,
-     "productos": ["Selvático de Paiche y Camarón", "Cóctel Brisa del Oriente"],
-     "subtotal": 17.50, "iva": 2.10, "total": 19.60,
-     "metodo_pago": "Efectivo", "estado": "Pagada", "fecha": "10/08/2026"},
-    {"numero": "001-001-000000124", "cliente": "Carlos Andrés Ramírez", "mesa": 2,
-     "productos": ["Bolón de Yuca Relleno de Maito de Pescado"],
-     "subtotal": 6.00, "iva": 0.72, "total": 6.72,
-     "metodo_pago": "Tarjeta", "estado": "Pagada", "fecha": "11/08/2026"},
-    {"numero": "001-001-000000125", "cliente": "Daniela Castillo Pinta", "mesa": 7,
-     "productos": ["Verde con Cecina Ahumada y Langostinos", "Arroz Meloso del Manglar con Guayusa y Mariscos"],
-     "subtotal": 25.00, "iva": 3.00, "total": 28.00,
-     "metodo_pago": "Transferencia", "estado": "Pendiente", "fecha": "12/08/2026"},
-]
-
 
 def obtener_choices_proveedores():
     conn = get_conexion()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute('SELECT id, empresa FROM proveedores')
+    cursor = conn.cursor()
+    cursor.execute('SELECT id, empresa FROM proveedores ORDER BY empresa')
     filas = cursor.fetchall()
     cursor.close()
     conn.close()
     return [(f['id'], f['empresa']) for f in filas]
+
+
+def obtener_choices_clientes():
+    conn = get_conexion()
+    cursor = conn.cursor()
+    cursor.execute('SELECT id, nombre FROM clientes ORDER BY nombre')
+    filas = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return [(f['id'], f['nombre']) for f in filas]
 
 
 # RUTA PRINCIPAL
@@ -140,18 +112,19 @@ def panel():
     return render_template('panel.html')
 
 # ---------------------------------------------------------------------------
-# MODULO PRODUCTOS (Menú del gastrobar) - Persistencia con MySQL
+# MODULO PRODUCTOS (Menú del gastrobar) - Persistencia con PostgreSQL
 # ---------------------------------------------------------------------------
 
 @app.route('/productos')
 @login_required
 def productos():
     conn = get_conexion()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor()
     cursor.execute('''
         SELECT p.*, pr.empresa AS proveedor_nombre
         FROM productos p
         LEFT JOIN proveedores pr ON p.proveedor_id = pr.id
+        ORDER BY p.categoria, p.nombre
     ''')
     filas = cursor.fetchall()
     cursor.close()
@@ -178,6 +151,7 @@ def nuevo_producto():
         conn.commit()
         cursor.close()
         conn.close()
+        flash('Producto registrado correctamente.', 'success')
         return redirect(url_for('productos'))
     return render_template('formulario_productos.html', form=form, modo='nuevo')
 
@@ -186,7 +160,7 @@ def nuevo_producto():
 @login_required
 def editar_producto(id):
     conn = get_conexion()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor()
     cursor.execute('SELECT * FROM productos WHERE id = %s', (id,))
     producto = cursor.fetchone()
     cursor.close()
@@ -210,6 +184,7 @@ def editar_producto(id):
         conn.commit()
         cursor.close()
         conn.close()
+        flash('Producto actualizado correctamente.', 'success')
         return redirect(url_for('productos'))
 
     return render_template('formulario_productos.html', form=form, modo='editar', id=id)
@@ -224,17 +199,24 @@ def eliminar_producto(id):
     conn.commit()
     cursor.close()
     conn.close()
+    flash('Producto eliminado.', 'info')
     return redirect(url_for('productos'))
 
 
 # ---------------------------------------------------------------------------
-# MODULO CLIENTES (Reservas y comensales)
+# MODULO CLIENTES (Reservas y comensales) - Persistencia con PostgreSQL
 # ---------------------------------------------------------------------------
 
 @app.route('/clientes')
 @login_required
 def clientes():
-    return render_template('clientes.html', clientes=lista_clientes)
+    conn = get_conexion()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM clientes ORDER BY nombre')
+    filas = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return render_template('clientes.html', clientes=filas)
 
 
 @app.route('/clientes/nuevo', methods=['GET', 'POST'])
@@ -242,26 +224,82 @@ def clientes():
 def nuevo_cliente():
     form = ClienteForm()
     if form.validate_on_submit():
-        lista_clientes.append({
-            "nombre": form.nombre.data,
-            "correo": form.correo.data,
-            "telefono": form.telefono.data,
-            "tipo": form.tipo.data,
-            "mesa_preferida": form.mesa_preferida.data,
-            "reservas": form.reservas.data,
-        })
+        conn = get_conexion()
+        cursor = conn.cursor()
+        cursor.execute(
+            'INSERT INTO clientes (nombre, correo, telefono, tipo, mesa_preferida, reservas) '
+            'VALUES (%s, %s, %s, %s, %s, %s)',
+            (form.nombre.data, form.correo.data, form.telefono.data,
+             form.tipo.data, form.mesa_preferida.data, form.reservas.data)
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+        flash('Cliente registrado correctamente.', 'success')
         return redirect(url_for('clientes'))
-    return render_template('formulario_cliente.html', form=form)
+    return render_template('formulario_cliente.html', form=form, modo='nuevo')
+
+
+@app.route('/clientes/editar/<int:id>', methods=['GET', 'POST'])
+@login_required
+def editar_cliente(id):
+    conn = get_conexion()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM clientes WHERE id = %s', (id,))
+    cliente = cursor.fetchone()
+    cursor.close()
+    conn.close()
+
+    if cliente is None:
+        abort(404)
+
+    form = ClienteForm(data=cliente) if request.method == 'GET' else ClienteForm()
+
+    if form.validate_on_submit():
+        conn = get_conexion()
+        cursor = conn.cursor()
+        cursor.execute(
+            'UPDATE clientes SET nombre=%s, correo=%s, telefono=%s, tipo=%s, '
+            'mesa_preferida=%s, reservas=%s WHERE id=%s',
+            (form.nombre.data, form.correo.data, form.telefono.data, form.tipo.data,
+             form.mesa_preferida.data, form.reservas.data, id)
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+        flash('Cliente actualizado correctamente.', 'success')
+        return redirect(url_for('clientes'))
+
+    return render_template('formulario_cliente.html', form=form, modo='editar', id=id)
+
+
+@app.route('/clientes/eliminar/<int:id>', methods=['POST'])
+@login_required
+def eliminar_cliente(id):
+    conn = get_conexion()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM clientes WHERE id = %s', (id,))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    flash('Cliente eliminado.', 'info')
+    return redirect(url_for('clientes'))
 
 
 # ---------------------------------------------------------------------------
-# MODULO PROVEEDORES (Insumos del gastrobar)
+# MODULO PROVEEDORES (Insumos del gastrobar) - Persistencia con PostgreSQL
 # ---------------------------------------------------------------------------
 
 @app.route('/proveedores')
 @login_required
 def proveedores():
-    return render_template('proveedores.html', proveedores=lista_proveedores)
+    conn = get_conexion()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM proveedores ORDER BY empresa')
+    filas = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return render_template('proveedores.html', proveedores=filas)
 
 
 @app.route('/proveedores/nuevo', methods=['GET', 'POST'])
@@ -269,49 +307,164 @@ def proveedores():
 def nuevo_proveedor():
     form = ProveedorForm()
     if form.validate_on_submit():
-        lista_proveedores.append({
-            "empresa": form.empresa.data,
-            "insumo": form.insumo.data,
-            "categoria": form.categoria.data,
-            "contacto": form.contacto.data,
-            "frecuencia": form.frecuencia.data,
-        })
+        conn = get_conexion()
+        cursor = conn.cursor()
+        cursor.execute(
+            'INSERT INTO proveedores (empresa, insumo, categoria, contacto, frecuencia) '
+            'VALUES (%s, %s, %s, %s, %s)',
+            (form.empresa.data, form.insumo.data, form.categoria.data,
+             form.contacto.data, form.frecuencia.data)
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+        flash('Proveedor registrado correctamente.', 'success')
         return redirect(url_for('proveedores'))
-    return render_template('formulario_proveedor.html', form=form)
+    return render_template('formulario_proveedor.html', form=form, modo='nuevo')
+
+
+@app.route('/proveedores/editar/<int:id>', methods=['GET', 'POST'])
+@login_required
+def editar_proveedor(id):
+    conn = get_conexion()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM proveedores WHERE id = %s', (id,))
+    proveedor = cursor.fetchone()
+    cursor.close()
+    conn.close()
+
+    if proveedor is None:
+        abort(404)
+
+    form = ProveedorForm(data=proveedor) if request.method == 'GET' else ProveedorForm()
+
+    if form.validate_on_submit():
+        conn = get_conexion()
+        cursor = conn.cursor()
+        cursor.execute(
+            'UPDATE proveedores SET empresa=%s, insumo=%s, categoria=%s, contacto=%s, '
+            'frecuencia=%s WHERE id=%s',
+            (form.empresa.data, form.insumo.data, form.categoria.data,
+             form.contacto.data, form.frecuencia.data, id)
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+        flash('Proveedor actualizado correctamente.', 'success')
+        return redirect(url_for('proveedores'))
+
+    return render_template('formulario_proveedor.html', form=form, modo='editar', id=id)
+
+
+@app.route('/proveedores/eliminar/<int:id>', methods=['POST'])
+@login_required
+def eliminar_proveedor(id):
+    conn = get_conexion()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM proveedores WHERE id = %s', (id,))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    flash('Proveedor eliminado.', 'info')
+    return redirect(url_for('proveedores'))
 
 # ---------------------------------------------------------------------------
-# MODULO FACTURACION (Cuenta por mesa)
+# MODULO FACTURACION (Cuenta por mesa) - Persistencia con PostgreSQL
+# Relacionada con clientes mediante cliente_id (FK) -> se usa JOIN al listar
 # ---------------------------------------------------------------------------
 
 @app.route('/facturacion')
 @login_required
 def facturacion():
-    return render_template('facturacion.html', facturas=lista_facturas)
+    conn = get_conexion()
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT f.*, c.nombre AS cliente_nombre
+        FROM facturas f
+        LEFT JOIN clientes c ON f.cliente_id = c.id
+        ORDER BY f.id DESC
+    ''')
+    filas = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return render_template('facturacion.html', facturas=filas)
 
 
 @app.route('/facturacion/nueva', methods=['GET', 'POST'])
 @login_required
 def nueva_facturacion():
     form = FacturacionForm()
+    form.cliente_id.choices = obtener_choices_clientes()
     if form.validate_on_submit():
         subtotal = form.subtotal.data
         iva = round(subtotal * 0.12, 2)
         total = round(subtotal + iva, 2)
-        productos_lista = [p.strip() for p in form.productos.data.split(',') if p.strip()]
-        lista_facturas.append({
-            "numero": form.numero.data,
-            "cliente": form.cliente.data,
-            "mesa": form.mesa.data,
-            "productos": productos_lista,
-            "subtotal": subtotal,
-            "iva": iva,
-            "total": total,
-            "metodo_pago": form.metodo_pago.data,
-            "estado": form.estado.data,
-            "fecha": form.fecha.data,
-        })
+
+        conn = get_conexion()
+        cursor = conn.cursor()
+        cursor.execute(
+            'INSERT INTO facturas (numero, cliente_id, mesa, productos, subtotal, iva, total, '
+            'metodo_pago, estado, fecha) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)',
+            (form.numero.data, form.cliente_id.data, form.mesa.data, form.productos.data,
+             subtotal, iva, total, form.metodo_pago.data, form.estado.data, form.fecha.data)
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+        flash('Factura registrada correctamente.', 'success')
         return redirect(url_for('facturacion'))
-    return render_template('formulario_facturacion.html', form=form)
+    return render_template('formulario_facturacion.html', form=form, modo='nuevo')
+
+
+@app.route('/facturacion/editar/<int:id>', methods=['GET', 'POST'])
+@login_required
+def editar_facturacion(id):
+    conn = get_conexion()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM facturas WHERE id = %s', (id,))
+    factura = cursor.fetchone()
+    cursor.close()
+    conn.close()
+
+    if factura is None:
+        abort(404)
+
+    form = FacturacionForm(data=factura) if request.method == 'GET' else FacturacionForm()
+    form.cliente_id.choices = obtener_choices_clientes()
+
+    if form.validate_on_submit():
+        subtotal = form.subtotal.data
+        iva = round(subtotal * 0.12, 2)
+        total = round(subtotal + iva, 2)
+
+        conn = get_conexion()
+        cursor = conn.cursor()
+        cursor.execute(
+            'UPDATE facturas SET numero=%s, cliente_id=%s, mesa=%s, productos=%s, subtotal=%s, '
+            'iva=%s, total=%s, metodo_pago=%s, estado=%s, fecha=%s WHERE id=%s',
+            (form.numero.data, form.cliente_id.data, form.mesa.data, form.productos.data,
+             subtotal, iva, total, form.metodo_pago.data, form.estado.data, form.fecha.data, id)
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+        flash('Factura actualizada correctamente.', 'success')
+        return redirect(url_for('facturacion'))
+
+    return render_template('formulario_facturacion.html', form=form, modo='editar', id=id)
+
+
+@app.route('/facturacion/eliminar/<int:id>', methods=['POST'])
+@login_required
+def eliminar_facturacion(id):
+    conn = get_conexion()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM facturas WHERE id = %s', (id,))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    flash('Factura eliminada.', 'info')
+    return redirect(url_for('facturacion'))
 
 
 if __name__ == '__main__':

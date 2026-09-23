@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block titulo %}{{ 'Editar Cliente' if modo == 'editar' else 'Nuevo Cliente' }}{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-7">
+                <div class="card shadow">
+                    <div class="card-body p-4">
+                        <h2 class="text-center mb-2"><strong>{{ 'Editar Cliente' if modo == 'editar' else 'Nuevo Cliente' }}</strong></h2>
+                        <p class="text-center text-muted mb-4">Clientes y Reservas</p>
+
+                        <form method="POST" action="{{ url_for('editar_cliente', id=id) if modo == 'editar' else url_for('nuevo_cliente') }}" novalidate>
+                            {{ form.hidden_tag() }}
+
+                            <div class="mb-3">
+                                {{ form.nombre.label(class="form-label fw-bold") }}
+                                {{ form.nombre(class="form-control" + (" is-invalid" if form.nombre.errors else "")) }}
+                                {% for error in form.nombre.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form.correo.label(class="form-label fw-bold") }}
+                                {{ form.correo(class="form-control" + (" is-invalid" if form.correo.errors else "")) }}
+                                {% for error in form.correo.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form.telefono.label(class="form-label fw-bold") }}
+                                {{ form.telefono(class="form-control" + (" is-invalid" if form.telefono.errors else "")) }}
+                                {% for error in form.telefono.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form.tipo.label(class="form-label fw-bold") }}
+                                {{ form.tipo(class="form-select" + (" is-invalid" if form.tipo.errors else "")) }}
+                                {% for error in form.tipo.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form.mesa_preferida.label(class="form-label fw-bold") }}
+                                {{ form.mesa_preferida(class="form-select" + (" is-invalid" if form.mesa_preferida.errors else "")) }}
+                                {% for error in form.mesa_preferida.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mb-4">
+                                {{ form.reservas.label(class="form-label fw-bold") }}
+                                {{ form.reservas(class="form-control" + (" is-invalid" if form.reservas.errors else "")) }}
+                                {% for error in form.reservas.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            {{ form.submit(class="btn btn-warning w-100 fw-bold") }}
+                        </form>
+
+                        <div class="text-center mt-3">
+                            <a href="{{ url_for('clientes') }}" class="link-volver">← Volver a clientes</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -8,6 +8,7 @@ class FacturacionForm(FlaskForm):
 
     El IVA y el total se calculan automáticamente a partir del subtotal
     ingresado, por lo que no se piden como campos del formulario.
+    El cliente se selecciona de la tabla clientes (relación por FK).
     """
 
     numero = StringField(
@@ -17,10 +18,10 @@ class FacturacionForm(FlaskForm):
                            message="Formato esperado: 001-001-000000123.")]
     )
 
-    cliente = StringField(
+    cliente_id = SelectField(
         "Cliente",
-        validators=[DataRequired(message="El nombre del cliente es obligatorio."),
-                    Length(min=3, max=100, message="Debe tener entre 3 y 100 caracteres.")]
+        coerce=int,
+        validators=[DataRequired(message="Seleccione un cliente.")]
     )
 
     mesa = IntegerField(

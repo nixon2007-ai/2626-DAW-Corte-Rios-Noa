@@ -11,7 +11,7 @@ class Usuario(UserMixin):
 
 def obtener_usuario_por_id(user_id):
     conn = get_conexion()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor()
     cursor.execute('SELECT * FROM usuarios WHERE id = %s', (user_id,))
     fila = cursor.fetchone()
     cursor.close()
@@ -23,7 +23,7 @@ def obtener_usuario_por_id(user_id):
 
 def obtener_usuario_por_nombre(nombre_usuario):
     conn = get_conexion()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor()
     cursor.execute('SELECT * FROM usuarios WHERE usuario = %s', (nombre_usuario,))
     fila = cursor.fetchone()
     cursor.close()
