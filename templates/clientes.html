@@ -4,7 +4,10 @@
 
 {% block content %}
 <section class="container py-5">
-    <h2 class="text-center mb-5"><strong>Clientes y Reservas</strong></h2>
+    <h2 class="text-center mb-3"><strong>Clientes y Reservas</strong></h2>
+    <div class="text-center mb-5">
+        <a href="{{ url_for('nuevo_cliente') }}" class="btn btn-warning">+ Nuevo cliente</a>
+    </div>
 
     <div class="table-responsive">
         <table class="table table-striped table-hover shadow">
@@ -16,6 +19,7 @@
                     <th>Tipo de Cliente</th>
                     <th>Mesa Preferida</th>
                     <th>N° Reservas</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -33,6 +37,15 @@
                     </td>
                     <td>{{ c.mesa_preferida }}</td>
                     <td>{{ c.reservas }}</td>
+                    <td>
+                        <div class="d-flex gap-2">
+                            <a href="{{ url_for('editar_cliente', id=c.id) }}" class="btn btn-sm btn-outline-primary">Editar</a>
+                            <form method="POST" action="{{ url_for('eliminar_cliente', id=c.id) }}" onsubmit="return confirm('¿Seguro que deseas eliminar este cliente?');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                            </form>
+                        </div>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
