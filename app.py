@@ -306,6 +306,11 @@ def proveedores():
 @login_required
 def nuevo_proveedor():
     form = ProveedorForm()
+    conn = get_conexion()
+    cursor = conn.cursor()
+    cursor.execute('SELECT 1')
+    cursor.close()
+    conn.close()
     if form.validate_on_submit():
         conn = get_conexion()
         cursor = conn.cursor()
