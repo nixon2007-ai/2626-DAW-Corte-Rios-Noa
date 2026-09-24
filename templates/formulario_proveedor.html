@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block titulo %}{{ 'Editar Proveedor' if modo == 'editar' else 'Nuevo Proveedor' }}{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-7">
+                <div class="card shadow">
+                    <div class="card-body p-4">
+                        <h2 class="text-center mb-2"><strong>{{ 'Editar Proveedor' if modo == 'editar' else 'Nuevo Proveedor' }}</strong></h2>
+                        <p class="text-center text-muted mb-4">Proveedores de Insumos</p>
+
+                        <form method="POST" action="{{ url_for('editar_proveedor', id=id) if modo == 'editar' else url_for('nuevo_proveedor') }}" novalidate>
+                            {{ form.hidden_tag() }}
+
+                            <div class="mb-3">
+                                {{ form.empresa.label(class="form-label fw-bold") }}
+                                {{ form.empresa(class="form-control") }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form.insumo.label(class="form-label fw-bold") }}
+                                {{ form.insumo(class="form-control") }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form.categoria.label(class="form-label fw-bold") }}
+                                {{ form.categoria(class="form-select") }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form.contacto.label(class="form-label fw-bold") }}
+                                {{ form.contacto(class="form-control") }}
+                            </div>
+
+                            <div class="mb-4">
+                                {{ form.frecuencia.label(class="form-label fw-bold") }}
+                                {{ form.frecuencia(class="form-select") }}
+                            </div>
+
+                            {{ form.submit(class="btn btn-warning w-100 fw-bold") }}
+                        </form>
+
+                        <div class="text-center mt-3">
+                            <a href="{{ url_for('proveedores') }}" class="link-volver">Volver a proveedores</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
