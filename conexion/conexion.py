@@ -18,9 +18,9 @@ if DATABASE_URL and DATABASE_URL.startswith('postgres://'):
 
 CONFIG_LOCAL = {
     'host': os.environ.get('DB_HOST', 'localhost'),
-    'port': os.environ.get('DB_PORT', '5432'),
+    'port': os.environ.get('DB_PORT', '5433'),
     'user': os.environ.get('DB_USER', 'admin'),
-    'password': os.environ.get('DB_PASSWORD', 'admin1234'),
+    'password': os.environ.get('DB_PASSWORD', 'sql1234'),
     'dbname': os.environ.get('DB_NAME', 'db_gastrobar'),
     'options': '-c client_encoding=UTF8 -c lc_messages=C',
 }
