@@ -40,11 +40,6 @@ def load_user(user_id):
     return obtener_usuario_por_id(user_id)
 
 
-# ---------------------------------------------------------------------------
-# Utilidades para poblar los <select> de los formularios con datos reales
-# de la base de datos (relaciones por clave foránea).
-# ---------------------------------------------------------------------------
-
 def obtener_choices_proveedores():
     conn = get_conexion()
     cursor = conn.cursor(cursor_factory=RealDictCursor)
@@ -65,13 +60,11 @@ def obtener_choices_clientes():
     return [(f['id'], f['nombre']) for f in filas]
 
 
-# RUTA PRINCIPAL
 @app.route('/')
 def index():
     return render_template('index.html')
 
 
-# INICIO DE SESION
 @app.route('/registro', methods=['GET', 'POST'])
 def registro():
     form = RegistroForm()
@@ -115,14 +108,13 @@ def logout():
     return redirect(url_for('login'))
 
 
-# PANEL DEL SISTEMA
 @app.route('/panel')
 @login_required
 def panel():
     return render_template('panel.html')
 
 # ---------------------------------------------------------------------------
-# MODULO PRODUCTOS (Menú del gastrobar) - Persistencia con PostgreSQL
+# MODULO PRODUCTOS
 # ---------------------------------------------------------------------------
 
 @app.route('/productos')
@@ -147,7 +139,6 @@ def productos():
 @login_required
 def nuevo_producto():
     form = ProductoForm()
-    form.proveedor_id.choices = obtener_choices_proveedores()
     if form.validate_on_submit():
         nombre_archivo = None
         if form.imagen.data:
@@ -158,9 +149,9 @@ def nuevo_producto():
         cursor = conn.cursor()
         cursor.execute(
             'INSERT INTO productos (nombre, categoria, precio, estado, descripcion, '
-            'produccion_diaria, imagen, proveedor_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)',
+            'produccion_diaria, imagen) VALUES (%s, %s, %s, %s, %s, %s, %s)',
             (form.nombre.data, form.categoria.data, form.precio.data, form.estado.data,
-             form.descripcion.data, form.produccion_diaria.data, nombre_archivo, form.proveedor_id.data)
+             form.descripcion.data, form.produccion_diaria.data, nombre_archivo)
         )
         conn.commit()
         cursor.close()
@@ -183,7 +174,6 @@ def editar_producto(id):
         abort(404)
 
     form = ProductoForm(data=producto) if request.method == 'GET' else ProductoForm()
-    form.proveedor_id.choices = obtener_choices_proveedores()
 
     if form.validate_on_submit():
         nombre_archivo = producto['imagen']
@@ -195,10 +185,9 @@ def editar_producto(id):
         cursor = conn.cursor()
         cursor.execute(
             'UPDATE productos SET nombre=%s, categoria=%s, precio=%s, estado=%s, descripcion=%s, '
-            'produccion_diaria=%s, imagen=%s, proveedor_id=%s WHERE id=%s',
+            'produccion_diaria=%s, imagen=%s WHERE id=%s',
             (form.nombre.data, form.categoria.data, form.precio.data, form.estado.data,
-             form.descripcion.data, form.produccion_diaria.data, nombre_archivo,
-             form.proveedor_id.data, id)
+             form.descripcion.data, form.produccion_diaria.data, nombre_archivo, id)
         )
         conn.commit()
         cursor.close()
@@ -226,7 +215,7 @@ def eliminar_producto(id):
     return redirect(url_for('productos'))
 
 # ---------------------------------------------------------------------------
-# MODULO CLIENTES (Reservas y comensales) - Persistencia con PostgreSQL
+# MODULO CLIENTES
 # ---------------------------------------------------------------------------
 
 
@@ -314,7 +303,7 @@ def eliminar_cliente(id):
 
 
 # ---------------------------------------------------------------------------
-# MODULO PROVEEDORES (Insumos del gastrobar) - Persistencia con PostgreSQL
+# MODULO PROVEEDORES
 # ---------------------------------------------------------------------------
 
 @app.route('/proveedores')
@@ -401,8 +390,7 @@ def eliminar_proveedor(id):
     return redirect(url_for('proveedores'))
 
 # ---------------------------------------------------------------------------
-# MODULO FACTURACION (Cuenta por mesa) - Persistencia con PostgreSQL
-# Relacionada con clientes mediante cliente_id (FK) -> se usa JOIN al listar
+# MODULO FACTURACION
 # ---------------------------------------------------------------------------
 
 def obtener_productos_disponibles():

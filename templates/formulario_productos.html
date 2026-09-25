@@ -12,8 +12,7 @@
                         <h2 class="text-center mb-2"><strong>{{ 'Editar Producto' if modo == 'editar' else 'Nuevo Producto' }}</strong></h2>
                         <p class="text-center text-muted mb-4">Menú del Gastrobar</p>
 
-<form method="POST" action="{{ url_for('editar_producto', id=id) if modo == 'editar' else url_for('nuevo_producto') }}" enctype="multipart/form-data" novalidate></form>
-
+                        <form method="POST" action="{{ url_for('editar_producto', id=id) if modo == 'editar' else url_for('nuevo_producto') }}" enctype="multipart/form-data" novalidate>
                         {{ form.hidden_tag() }}
 
                             <div class="mb-3">
@@ -48,7 +47,7 @@
                                 {% endfor %}
                             </div>
 
-                            <div class="mb-4">
+                            <div class="mb-3">
                                 {{ form.descripcion.label(class="form-label fw-bold") }}
                                 {{ form.descripcion(class="form-control" + (" is-invalid" if form.descripcion.errors else ""), rows="3") }}
                                 {% for error in form.descripcion.errors %}
@@ -56,32 +55,26 @@
                                 {% endfor %}
                             </div>
 
-                            {{ form.submit(class="btn btn-warning w-100 fw-bold") }}
-                            <div class="mb-4">
-                                <div class="mb-3">
-    {{ form.produccion_diaria.label(class="form-label fw-bold") }}
-    {{ form.produccion_diaria(class="form-control" + (" is-invalid" if form.produccion_diaria.errors else "")) }}
-    {% for error in form.produccion_diaria.errors %}
-    <div class="invalid-feedback">{{ error }}</div>
-    {% endfor %}
-</div>
+                            <div class="mb-3">
+                                {{ form.produccion_diaria.label(class="form-label fw-bold") }}
+                                {{ form.produccion_diaria(class="form-control" + (" is-invalid" if form.produccion_diaria.errors else "")) }}
+                                {% for error in form.produccion_diaria.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
 
-<div class="mb-3">
-    {{ form.imagen.label(class="form-label fw-bold") }}
-    {{ form.imagen(class="form-control" + (" is-invalid" if form.imagen.errors else "")) }}
-    {% for error in form.imagen.errors %}
-    <div class="invalid-feedback">{{ error }}</div>
-    {% endfor %}
-    {% if modo == 'editar' and producto.imagen %}
-    <img src="{{ url_for('static', filename='img/productos/' + producto.imagen) }}" style="max-width:150px" class="mt-2 rounded">
-    {% endif %}
-</div>
-    {{ form.proveedor_id.label(class="form-label fw-bold") }}
-    {{ form.proveedor_id(class="form-select" + (" is-invalid" if form.proveedor_id.errors else "")) }}
-    {% for error in form.proveedor_id.errors %}
-    <div class="invalid-feedback">{{ error }}</div>
-    {% endfor %}
-</div>
+                            <div class="mb-4">
+                                {{ form.imagen.label(class="form-label fw-bold") }}
+                                {{ form.imagen(class="form-control" + (" is-invalid" if form.imagen.errors else "")) }}
+                                {% for error in form.imagen.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                                {% if modo == 'editar' and producto.imagen %}
+                                <img src="{{ url_for('static', filename='img/productos/' + producto.imagen) }}" style="max-width:150px" class="mt-2 rounded">
+                                {% endif %}
+                            </div>
+
+                            {{ form.submit(class="btn btn-warning w-100 fw-bold") }}
                         </form>
 
                         <div class="text-center mt-3">

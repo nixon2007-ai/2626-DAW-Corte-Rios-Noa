@@ -54,10 +54,4 @@ class ProductoForm(FlaskForm):
         validators=[FileAllowed(['jpg', 'jpeg', 'png', 'webp'], "Solo imágenes JPG, PNG o WEBP.")]
     )
 
-    proveedor_id = SelectField(
-        "Proveedor",
-        coerce=int,
-        validators=[DataRequired(message="Seleccione un proveedor.")]
-    )
-
     submit = SubmitField("Guardar producto")
