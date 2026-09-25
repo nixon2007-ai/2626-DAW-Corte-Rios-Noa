@@ -1,12 +1,10 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, SelectField, FloatField, IntegerField, TextAreaField, SubmitField
-from wtforms.validators import DataRequired, Length, NumberRange, Optional
+from wtforms.validators import DataRequired, Length, NumberRange
 
 
 class ProductoForm(FlaskForm):
-    """Formulario para registrar/editar un producto del menú del gastrobar."""
-
     nombre = StringField(
         "Nombre del producto",
         validators=[DataRequired(message="El nombre es obligatorio."),
@@ -52,6 +50,12 @@ class ProductoForm(FlaskForm):
     imagen = FileField(
         "Imagen del producto",
         validators=[FileAllowed(['jpg', 'jpeg', 'png', 'webp'], "Solo imágenes JPG, PNG o WEBP.")]
+    )
+
+    proveedor_id = SelectField(
+        "Proveedor",
+        coerce=int,
+        validators=[DataRequired(message="Seleccione un proveedor.")]
     )
 
     submit = SubmitField("Guardar producto")

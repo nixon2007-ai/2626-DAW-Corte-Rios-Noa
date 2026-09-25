@@ -1,6 +1,9 @@
 import os
 import psycopg2
 import psycopg2.extras
+from dotenv import load_dotenv
+
+load_dotenv()  # Lee el archivo .env en local (en Render no existe y no pasa nada)
 
 # ---------------------------------------------------------------------------
 # Conexion a PostgreSQL
@@ -23,9 +26,9 @@ CONFIG_LOCAL = {
     'port': os.environ.get('DB_PORT', '5432'),
     'user': os.environ.get('DB_USER', 'postgres'),
     'password': os.environ.get('DB_PASSWORD', 'sql1234'),
-    'dbname': os.environ.get('DB_NAME', 'gastrobar_db'),
+    'dbname': os.environ.get('DB_NAME', 'db_gastrobar'),
+    'options': '-c lc_messages=C',
 }
-
 
 def get_conexion():
     """Devuelve una conexion a PostgreSQL.

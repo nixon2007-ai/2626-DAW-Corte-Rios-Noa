@@ -8,15 +8,15 @@
     <div class="text-center mb-5">
         <a href="{{ url_for('nueva_facturacion') }}" class="btn btn-warning">+ Nueva factura</a>
     </div>
-<a href="{{ url_for('factura_pdf', id=f.id) }}" class="btn btn-sm btn-danger">📄 Descargar PDF</a>
+
     <div class="table-responsive">
         <table class="table table-striped table-hover shadow align-middle">
             <thead class="table-dark">
                 <tr>
                     <th>N° Factura</th>
                     <th>Cliente</th>
+                    <th>Cédula</th>
                     <th>Mesa</th>
-                    <th>Productos Consumidos</th>
                     <th>Subtotal</th>
                     <th>IVA</th>
                     <th>Total</th>
@@ -31,8 +31,8 @@
                 <tr>
                     <td>{{ f.numero }}</td>
                     <td>{{ f.cliente_nombre or '—' }}</td>
+                    <td>{{ f.cliente_cedula or '—' }}</td>
                     <td>{{ f.mesa }}</td>
-                    <td>{{ f.productos }}</td>
                     <td>${{ "%.2f"|format(f.subtotal) }}</td>
                     <td>${{ "%.2f"|format(f.iva) }}</td>
                     <td><strong>${{ "%.2f"|format(f.total) }}</strong></td>
@@ -47,11 +47,7 @@
                     <td>{{ f.fecha }}</td>
                     <td>
                         <div class="d-flex gap-2">
-                            <a href="{{ url_for('editar_facturacion', id=f.id) }}" class="btn btn-sm btn-outline-primary">Editar</a>
-                            <form method="POST" action="{{ url_for('eliminar_facturacion', id=f.id) }}" onsubmit="return confirm('¿Seguro que deseas eliminar esta factura?');">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
-                            </form>
+                            <a href="{{ url_for('factura_pdf', id=f.id) }}" class="btn btn-sm btn-danger">📄 PDF</a>
                         </div>
                     </td>
                 </tr>
