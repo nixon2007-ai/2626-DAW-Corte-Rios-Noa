@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, FloatField, TextAreaField, SubmitField
+from flask_wtf.file import FileField, FileAllowed
+from wtforms import StringField, SelectField, FloatField, IntegerField, TextAreaField, SubmitField
 from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
 
@@ -42,10 +43,21 @@ class ProductoForm(FlaskForm):
                     Length(min=10, max=300, message="Debe tener entre 10 y 300 caracteres.")]
     )
 
+    produccion_diaria = IntegerField(
+        "Producción diaria (unidades)",
+        validators=[DataRequired(message="Indique cuántos se hacen al día."),
+                    NumberRange(min=0, message="No puede ser negativo.")]
+    )
+
+    imagen = FileField(
+        "Imagen del producto",
+        validators=[FileAllowed(['jpg', 'jpeg', 'png', 'webp'], "Solo imágenes JPG, PNG o WEBP.")]
+    )
+
     proveedor_id = SelectField(
-        "Proveedor (opcional)",
+        "Proveedor",
         coerce=int,
-        validators=[Optional()]
+        validators=[DataRequired(message="Seleccione un proveedor.")]
     )
 
     submit = SubmitField("Guardar producto")

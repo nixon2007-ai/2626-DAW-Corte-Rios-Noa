@@ -1,0 +1,40 @@
+<html>
+<head>
+<style>
+    body { font-family: Helvetica, Arial, sans-serif; font-size: 13px; }
+    h1 { color: #b8860b; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { border: 1px solid #ccc; padding: 6px; text-align: left; }
+    .totales { text-align: right; margin-top: 15px; }
+</style>
+</head>
+<body>
+    <h1>Mar & Selva Gastrobar</h1>
+    <p><strong>Factura N°:</strong> {{ factura.numero }}</p>
+    <p><strong>Cliente:</strong> {{ factura.cliente_nombre }} — C.I. {{ factura.cliente_cedula }}</p>
+    <p><strong>Mesa:</strong> {{ factura.mesa }} &nbsp; <strong>Fecha:</strong> {{ factura.fecha }}</p>
+    <p><strong>Método de pago:</strong> {{ factura.metodo_pago }} &nbsp; <strong>Estado:</strong> {{ factura.estado }}</p>
+
+    <table>
+        <thead>
+            <tr><th>Producto</th><th>Cantidad</th><th>Precio unit.</th><th>Subtotal</th></tr>
+        </thead>
+        <tbody>
+            {% for d in detalle %}
+            <tr>
+                <td>{{ d.producto_nombre }}</td>
+                <td>{{ d.cantidad }}</td>
+                <td>${{ "%.2f"|format(d.precio_unitario) }}</td>
+                <td>${{ "%.2f"|format(d.subtotal) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="totales">
+        <p>Subtotal: ${{ "%.2f"|format(factura.subtotal) }}</p>
+        <p>IVA (12%): ${{ "%.2f"|format(factura.iva) }}</p>
+        <h3>TOTAL: ${{ "%.2f"|format(factura.total) }}</h3>
+    </div>
+</body>
+</html>

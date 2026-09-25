@@ -13,16 +13,26 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from models import obtener_usuario_por_id, obtener_usuario_por_nombre
 from forms.login_form import LoginForm
 from forms.usuario_form import RegistroForm
+import os
+from datetime import datetime
+from io import BytesIO
+from werkzeug.utils import secure_filename
+from xhtml2pdf import pisa
+from psycopg2.extras import RealDictCursor
 
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'mar-y-selva-gastrobar-clave-secreta-2026'
 csrf = CSRFProtect(app)
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 login_manager.login_message = "Debes iniciar sesión para acceder a esta página."
 login_manager.login_message_category = "warning"
+
+UPLOAD_FOLDER = os.path.join(app.root_path, 'static', 'img', 'productos')
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
 @login_manager.user_loader
@@ -37,7 +47,7 @@ def load_user(user_id):
 
 def obtener_choices_proveedores():
     conn = get_conexion()
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
     cursor.execute('SELECT id, empresa FROM proveedores ORDER BY empresa')
     filas = cursor.fetchall()
     cursor.close()
@@ -47,7 +57,7 @@ def obtener_choices_proveedores():
 
 def obtener_choices_clientes():
     conn = get_conexion()
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
     cursor.execute('SELECT id, nombre FROM clientes ORDER BY nombre')
     filas = cursor.fetchall()
     cursor.close()
@@ -119,12 +129,11 @@ def panel():
 @login_required
 def productos():
     conn = get_conexion()
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
     cursor.execute('''
         SELECT p.*, pr.empresa AS proveedor_nombre
         FROM productos p
         LEFT JOIN proveedores pr ON p.proveedor_id = pr.id
-        ORDER BY p.categoria, p.nombre
     ''')
     filas = cursor.fetchall()
     cursor.close()
@@ -140,18 +149,22 @@ def nuevo_producto():
     form = ProductoForm()
     form.proveedor_id.choices = obtener_choices_proveedores()
     if form.validate_on_submit():
+        nombre_archivo = None
+        if form.imagen.data:
+            nombre_archivo = secure_filename(form.imagen.data.filename)
+            form.imagen.data.save(os.path.join(UPLOAD_FOLDER, nombre_archivo))
+
         conn = get_conexion()
         cursor = conn.cursor()
         cursor.execute(
-            'INSERT INTO productos (nombre, categoria, precio, estado, descripcion, proveedor_id) '
-            'VALUES (%s, %s, %s, %s, %s, %s)',
-            (form.nombre.data, form.categoria.data, form.precio.data,
-             form.estado.data, form.descripcion.data, form.proveedor_id.data)
+            'INSERT INTO productos (nombre, categoria, precio, estado, descripcion, '
+            'produccion_diaria, imagen, proveedor_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)',
+            (form.nombre.data, form.categoria.data, form.precio.data, form.estado.data,
+             form.descripcion.data, form.produccion_diaria.data, nombre_archivo, form.proveedor_id.data)
         )
         conn.commit()
         cursor.close()
         conn.close()
-        flash('Producto registrado correctamente.', 'success')
         return redirect(url_for('productos'))
     return render_template('formulario_productos.html', form=form, modo='nuevo')
 
@@ -160,7 +173,7 @@ def nuevo_producto():
 @login_required
 def editar_producto(id):
     conn = get_conexion()
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
     cursor.execute('SELECT * FROM productos WHERE id = %s', (id,))
     producto = cursor.fetchone()
     cursor.close()
@@ -173,21 +186,26 @@ def editar_producto(id):
     form.proveedor_id.choices = obtener_choices_proveedores()
 
     if form.validate_on_submit():
+        nombre_archivo = producto['imagen']
+        if form.imagen.data:
+            nombre_archivo = secure_filename(form.imagen.data.filename)
+            form.imagen.data.save(os.path.join(UPLOAD_FOLDER, nombre_archivo))
+
         conn = get_conexion()
         cursor = conn.cursor()
         cursor.execute(
-            'UPDATE productos SET nombre=%s, categoria=%s, precio=%s, estado=%s, '
-            'descripcion=%s, proveedor_id=%s WHERE id=%s',
+            'UPDATE productos SET nombre=%s, categoria=%s, precio=%s, estado=%s, descripcion=%s, '
+            'produccion_diaria=%s, imagen=%s, proveedor_id=%s WHERE id=%s',
             (form.nombre.data, form.categoria.data, form.precio.data, form.estado.data,
-             form.descripcion.data, form.proveedor_id.data, id)
+             form.descripcion.data, form.produccion_diaria.data, nombre_archivo,
+             form.proveedor_id.data, id)
         )
         conn.commit()
         cursor.close()
         conn.close()
-        flash('Producto actualizado correctamente.', 'success')
         return redirect(url_for('productos'))
 
-    return render_template('formulario_productos.html', form=form, modo='editar', id=id)
+    return render_template('formulario_productos.html', form=form, modo='editar', id=id, producto=producto)
 
 
 @app.route('/productos/eliminar/<int:id>', methods=['POST'])
@@ -195,28 +213,21 @@ def editar_producto(id):
 def eliminar_producto(id):
     conn = get_conexion()
     cursor = conn.cursor()
-    cursor.execute('DELETE FROM productos WHERE id = %s', (id,))
-    conn.commit()
-    cursor.close()
-    conn.close()
-    flash('Producto eliminado.', 'info')
+    try:
+        cursor.execute('DELETE FROM productos WHERE id = %s', (id,))
+        conn.commit()
+        flash('Producto eliminado.', 'success')
+    except Exception:
+        conn.rollback()
+        flash('No se puede eliminar: este producto ya tiene ventas registradas en facturas.', 'danger')
+    finally:
+        cursor.close()
+        conn.close()
     return redirect(url_for('productos'))
-
 
 # ---------------------------------------------------------------------------
 # MODULO CLIENTES (Reservas y comensales) - Persistencia con PostgreSQL
 # ---------------------------------------------------------------------------
-
-@app.route('/clientes')
-@login_required
-def clientes():
-    conn = get_conexion()
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM clientes ORDER BY nombre')
-    filas = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return render_template('clientes.html', clientes=filas)
 
 
 @app.route('/clientes/nuevo', methods=['GET', 'POST'])
@@ -227,24 +238,35 @@ def nuevo_cliente():
         conn = get_conexion()
         cursor = conn.cursor()
         cursor.execute(
-            'INSERT INTO clientes (nombre, correo, telefono, tipo, mesa_preferida, reservas) '
-            'VALUES (%s, %s, %s, %s, %s, %s)',
-            (form.nombre.data, form.correo.data, form.telefono.data,
+            'INSERT INTO clientes (nombre, cedula, correo, telefono, tipo, mesa_preferida, reservas) '
+            'VALUES (%s, %s, %s, %s, %s, %s, %s)',
+            (form.nombre.data, form.cedula.data, form.correo.data, form.telefono.data,
              form.tipo.data, form.mesa_preferida.data, form.reservas.data)
         )
         conn.commit()
         cursor.close()
         conn.close()
-        flash('Cliente registrado correctamente.', 'success')
         return redirect(url_for('clientes'))
-    return render_template('formulario_cliente.html', form=form, modo='nuevo')
+    return render_template('formulario_cliente.html', form=form)
+
+
+@app.route('/clientes')
+@login_required
+def clientes():
+    conn = get_conexion()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+    cursor.execute('SELECT * FROM clientes ORDER BY id')
+    filas = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return render_template('clientes.html', clientes=filas)
 
 
 @app.route('/clientes/editar/<int:id>', methods=['GET', 'POST'])
 @login_required
 def editar_cliente(id):
     conn = get_conexion()
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
     cursor.execute('SELECT * FROM clientes WHERE id = %s', (id,))
     cliente = cursor.fetchone()
     cursor.close()
@@ -278,11 +300,16 @@ def editar_cliente(id):
 def eliminar_cliente(id):
     conn = get_conexion()
     cursor = conn.cursor()
-    cursor.execute('DELETE FROM clientes WHERE id = %s', (id,))
-    conn.commit()
-    cursor.close()
-    conn.close()
-    flash('Cliente eliminado.', 'info')
+    try:
+        cursor.execute('DELETE FROM clientes WHERE id = %s', (id,))
+        conn.commit()
+        flash('Cliente eliminado.', 'info')
+    except Exception:
+        conn.rollback()
+        flash('No se puede eliminar: este cliente ya tiene facturas registradas.', 'danger')
+    finally:
+        cursor.close()
+        conn.close()
     return redirect(url_for('clientes'))
 
 
@@ -294,7 +321,7 @@ def eliminar_cliente(id):
 @login_required
 def proveedores():
     conn = get_conexion()
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
     cursor.execute('SELECT * FROM proveedores ORDER BY empresa')
     filas = cursor.fetchall()
     cursor.close()
@@ -306,11 +333,6 @@ def proveedores():
 @login_required
 def nuevo_proveedor():
     form = ProveedorForm()
-    conn = get_conexion()
-    cursor = conn.cursor()
-    cursor.execute('SELECT 1')
-    cursor.close()
-    conn.close()
     if form.validate_on_submit():
         conn = get_conexion()
         cursor = conn.cursor()
@@ -332,7 +354,7 @@ def nuevo_proveedor():
 @login_required
 def editar_proveedor(id):
     conn = get_conexion()
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
     cursor.execute('SELECT * FROM proveedores WHERE id = %s', (id,))
     proveedor = cursor.fetchone()
     cursor.close()
@@ -366,11 +388,16 @@ def editar_proveedor(id):
 def eliminar_proveedor(id):
     conn = get_conexion()
     cursor = conn.cursor()
-    cursor.execute('DELETE FROM proveedores WHERE id = %s', (id,))
-    conn.commit()
-    cursor.close()
-    conn.close()
-    flash('Proveedor eliminado.', 'info')
+    try:
+        cursor.execute('DELETE FROM proveedores WHERE id = %s', (id,))
+        conn.commit()
+        flash('Proveedor eliminado.', 'info')
+    except Exception:
+        conn.rollback()
+        flash('No se puede eliminar: este proveedor ya tiene productos asociados.', 'danger')
+    finally:
+        cursor.close()
+        conn.close()
     return redirect(url_for('proveedores'))
 
 # ---------------------------------------------------------------------------
@@ -378,13 +405,23 @@ def eliminar_proveedor(id):
 # Relacionada con clientes mediante cliente_id (FK) -> se usa JOIN al listar
 # ---------------------------------------------------------------------------
 
+def obtener_productos_disponibles():
+    conn = get_conexion()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+    cursor.execute("SELECT id, nombre, precio FROM productos WHERE estado = 'Disponible' ORDER BY nombre")
+    filas = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return filas
+
+
 @app.route('/facturacion')
 @login_required
 def facturacion():
     conn = get_conexion()
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
     cursor.execute('''
-        SELECT f.*, c.nombre AS cliente_nombre
+        SELECT f.*, c.nombre AS cliente_nombre, c.cedula AS cliente_cedula
         FROM facturas f
         LEFT JOIN clientes c ON f.cliente_id = c.id
         ORDER BY f.id DESC
@@ -400,76 +437,101 @@ def facturacion():
 def nueva_facturacion():
     form = FacturacionForm()
     form.cliente_id.choices = obtener_choices_clientes()
-    if form.validate_on_submit():
-        subtotal = form.subtotal.data
-        iva = round(subtotal * 0.12, 2)
-        total = round(subtotal + iva, 2)
+
+    if request.method == 'POST' and form.validate_on_submit():
+        productos_ids = request.form.getlist('producto_id[]')
+        cantidades = request.form.getlist('cantidad[]')
+
+        lineas = []
+        subtotal_total = 0.0
+        conn = get_conexion()
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
+        for pid, cant in zip(productos_ids, cantidades):
+            if not pid or not cant:
+                continue
+            pid = int(pid)
+            cant = int(cant)
+            if cant <= 0:
+                continue
+            cursor.execute('SELECT precio FROM productos WHERE id = %s', (pid,))
+            row = cursor.fetchone()
+            if not row:
+                continue
+            precio_unit = float(row['precio'])
+            sub = precio_unit * cant
+            subtotal_total += sub
+            lineas.append((pid, cant, precio_unit, sub))
+        cursor.close()
+        conn.close()
+
+        if not lineas:
+            flash('Debes seleccionar al menos un producto con cantidad válida.', 'danger')
+            return render_template('formulario_facturacion.html', form=form,
+                                    productos=obtener_productos_disponibles())
+
+        iva_total = round(subtotal_total * 0.12, 2)
+        total_general = round(subtotal_total + iva_total, 2)
 
         conn = get_conexion()
         cursor = conn.cursor()
         cursor.execute(
-            'INSERT INTO facturas (numero, cliente_id, mesa, productos, subtotal, iva, total, '
-            'metodo_pago, estado, fecha) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)',
-            (form.numero.data, form.cliente_id.data, form.mesa.data, form.productos.data,
-             subtotal, iva, total, form.metodo_pago.data, form.estado.data, form.fecha.data)
+            'INSERT INTO facturas (numero, cliente_id, mesa, subtotal, iva, total, metodo_pago, estado, fecha) '
+            'VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id',
+            (form.numero.data, form.cliente_id.data, form.mesa.data, round(subtotal_total, 2),
+             iva_total, total_general, form.metodo_pago.data, form.estado.data, form.fecha.data)
         )
+        factura_id = cursor.fetchone()[0]
+
+        for pid, cant, precio_unit, sub in lineas:
+            cursor.execute(
+                'INSERT INTO detalle_factura (factura_id, producto_id, cantidad, precio_unitario, subtotal) '
+                'VALUES (%s, %s, %s, %s, %s)',
+                (factura_id, pid, cant, precio_unit, sub)
+            )
         conn.commit()
         cursor.close()
         conn.close()
-        flash('Factura registrada correctamente.', 'success')
         return redirect(url_for('facturacion'))
-    return render_template('formulario_facturacion.html', form=form, modo='nuevo')
+
+    return render_template('formulario_facturacion.html', form=form,
+                            productos=obtener_productos_disponibles())
 
 
-@app.route('/facturacion/editar/<int:id>', methods=['GET', 'POST'])
+@app.route('/facturacion/pdf/<int:id>')
 @login_required
-def editar_facturacion(id):
+def factura_pdf(id):
     conn = get_conexion()
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM facturas WHERE id = %s', (id,))
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+    cursor.execute('''
+        SELECT f.*, c.nombre AS cliente_nombre, c.cedula AS cliente_cedula
+        FROM facturas f LEFT JOIN clientes c ON f.cliente_id = c.id
+        WHERE f.id = %s
+    ''', (id,))
     factura = cursor.fetchone()
+
+    cursor.execute('''
+        SELECT d.*, p.nombre AS producto_nombre
+        FROM detalle_factura d JOIN productos p ON d.producto_id = p.id
+        WHERE d.factura_id = %s
+    ''', (id,))
+    detalle = cursor.fetchall()
     cursor.close()
     conn.close()
 
     if factura is None:
         abort(404)
 
-    form = FacturacionForm(data=factura) if request.method == 'GET' else FacturacionForm()
-    form.cliente_id.choices = obtener_choices_clientes()
+    html = render_template('factura_pdf.html', factura=factura, detalle=detalle)
+    resultado = BytesIO()
+    pisa.CreatePDF(html, dest=resultado)
+    resultado.seek(0)
 
-    if form.validate_on_submit():
-        subtotal = form.subtotal.data
-        iva = round(subtotal * 0.12, 2)
-        total = round(subtotal + iva, 2)
-
-        conn = get_conexion()
-        cursor = conn.cursor()
-        cursor.execute(
-            'UPDATE facturas SET numero=%s, cliente_id=%s, mesa=%s, productos=%s, subtotal=%s, '
-            'iva=%s, total=%s, metodo_pago=%s, estado=%s, fecha=%s WHERE id=%s',
-            (form.numero.data, form.cliente_id.data, form.mesa.data, form.productos.data,
-             subtotal, iva, total, form.metodo_pago.data, form.estado.data, form.fecha.data, id)
-        )
-        conn.commit()
-        cursor.close()
-        conn.close()
-        flash('Factura actualizada correctamente.', 'success')
-        return redirect(url_for('facturacion'))
-
-    return render_template('formulario_facturacion.html', form=form, modo='editar', id=id)
-
-
-@app.route('/facturacion/eliminar/<int:id>', methods=['POST'])
-@login_required
-def eliminar_facturacion(id):
-    conn = get_conexion()
-    cursor = conn.cursor()
-    cursor.execute('DELETE FROM facturas WHERE id = %s', (id,))
-    conn.commit()
-    cursor.close()
-    conn.close()
-    flash('Factura eliminada.', 'info')
-    return redirect(url_for('facturacion'))
+    from flask import Response
+    return Response(
+        resultado.getvalue(),
+        mimetype='application/pdf',
+        headers={'Content-Disposition': f'attachment; filename=factura_{factura["numero"]}.pdf'}
+    )
 
 
 if __name__ == '__main__':
