@@ -16,7 +16,7 @@
 --      el comportamiento por defecto (RESTRICT), para que el mensaje de
 --      "no se puede eliminar" que ya maneja app.py funcione correctamente.
 --
--- Ejecutar este script UNA SOLA VEZ contra tu base local "gastrobar_db".
+-- Ejecutar este script UNA SOLA VEZ contra tu base local "bd_gastrobar".
 -- Si ya tenias tablas viejas, primero corre limpiar_bd.sql (o borra y
 -- vuelve a crear la base) para evitar choques con el diseno anterior.
 -- =============================================================================
