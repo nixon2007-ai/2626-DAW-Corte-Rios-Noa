@@ -55,13 +55,7 @@
                                 {% endfor %}
                             </div>
 
-                            <div class="mb-3">
-                                {{ form.produccion_diaria.label(class="form-label fw-bold") }}
-                                {{ form.produccion_diaria(class="form-control" + (" is-invalid" if form.produccion_diaria.errors else "")) }}
-                                {% for error in form.produccion_diaria.errors %}
-                                <div class="invalid-feedback">{{ error }}</div>
-                                {% endfor %}
-                            </div>
+                        
 
 <div class="mb-3">
     {{ form.produccion_diaria.label(class="form-label fw-bold") }}
@@ -71,16 +65,6 @@
     {% endfor %}
 </div>
 
-<div class="mb-3">
-    {{ form.imagen.label(class="form-label fw-bold") }}
-    {{ form.imagen(class="form-control" + (" is-invalid" if form.imagen.errors else "")) }}
-    {% for error in form.imagen.errors %}
-    <div class="invalid-feedback">{{ error }}</div>
-    {% endfor %}
-    {% if modo == 'editar' and producto.imagen %}
-    <img src="{{ url_for('static', filename='img/productos/' + producto.imagen) }}" style="max-width:150px" class="mt-2 rounded">
-    {% endif %}
-</div>
                             {{ form.submit(class="btn btn-warning w-100 fw-bold") }}
                         </form>
 
