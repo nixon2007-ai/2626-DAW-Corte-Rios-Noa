@@ -39,6 +39,17 @@
                                 {% endfor %}
                             </div>
 
+                            <div class="mb-3">
+                                {{ form.captcha.label(class="form-label fw-bold") }}
+                                <div class="input-group">
+                                    <span class="input-group-text">¿Cuánto es {{ num_a }} + {{ num_b }}?</span>
+                                    {{ form.captcha(class="form-control" + (" is-invalid" if form.captcha.errors else ""), placeholder="Escribe el resultado") }}
+                                </div>
+                                {% for error in form.captcha.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
                             {{ form.submit(class="btn btn-login w-100 fw-bold") }}
                         </form>
 

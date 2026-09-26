@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, abort, request
+from flask import Flask, render_template, redirect, url_for, abort, request, session
 from flask_wtf.csrf import CSRFProtect
 
 from forms.producto_form import ProductoForm
@@ -24,6 +24,7 @@ from datetime import datetime
 from io import BytesIO
 from werkzeug.utils import secure_filename
 from xhtml2pdf import pisa
+import random
 from psycopg2.extras import RealDictCursor
 
 app = Flask(__name__)
@@ -96,14 +97,27 @@ def registro():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    if form.validate_on_submit():
-        usuario = obtener_usuario_por_nombre(form.usuario.data)
-        if usuario and check_password_hash(usuario.password, form.password.data):
-            login_user(usuario)
-            return redirect(url_for('panel'))
-        else:
-            flash('Usuario o contraseña incorrectos.', 'danger')
-    return render_template('login.html', form=form)
+
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            captcha_esperado = session.get('captcha_resultado')
+            if captcha_esperado is None or form.captcha.data != captcha_esperado:
+                flash('La verificación es incorrecta. Intenta de nuevo.', 'danger')
+            else:
+                usuario = obtener_usuario_por_nombre(form.usuario.data)
+                if usuario and check_password_hash(usuario.password, form.password.data):
+                    session.pop('captcha_resultado', None)
+                    login_user(usuario)
+                    return redirect(url_for('panel'))
+                else:
+                    flash('Usuario o contraseña incorrectos.', 'danger')
+
+    # Genera una nueva operación de verificación cada vez que se muestra el formulario
+    num_a = random.randint(1, 10)
+    num_b = random.randint(1, 10)
+    session['captcha_resultado'] = num_a + num_b
+
+    return render_template('login.html', form=form, num_a=num_a, num_b=num_b)
 
 
 @app.route('/logout')
