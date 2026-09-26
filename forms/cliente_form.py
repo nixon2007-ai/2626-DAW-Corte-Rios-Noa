@@ -31,8 +31,8 @@ class ClienteForm(FlaskForm):
     )
     mesa_preferida = StringField(
         "Mesa preferida",
-        validators=[DataRequired(message="Este campo es obligatorio."),
-                    Length(max=50)]
+        choices=[("Barra", "Barra"), ("Salon Interior", "Salon Interior"), ("Terraza", "Terraza")],
+              validators=[DataRequired()]
     )
     reservas = IntegerField(
         "Número de reservas previas",
