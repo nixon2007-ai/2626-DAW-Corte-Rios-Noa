@@ -435,6 +435,7 @@ def nueva_facturacion():
 
         lineas = []
         subtotal_total = 0.0
+        stock_insuficiente = []
         for pid, cant in zip(productos_ids, cantidades):
             if not pid or not cant:
                 continue
@@ -444,16 +445,29 @@ def nueva_facturacion():
                 continue
             conn = get_conexion()
             cursor = conn.cursor()
-            cursor.execute('SELECT precio FROM productos WHERE id = %s', (pid,))
+            cursor.execute('SELECT nombre, precio, produccion_diaria FROM productos WHERE id = %s', (pid,))
             row = cursor.fetchone()
             cursor.close()
             conn.close()
             if not row:
                 continue
+
+            stock_disponible = row['produccion_diaria'] or 0
+            if cant > stock_disponible:
+                stock_insuficiente.append(
+                    f"{row['nombre']} (pediste {cant}, quedan {stock_disponible})"
+                )
+                continue
+
             precio_unit = float(row['precio'])
             sub = precio_unit * cant
             subtotal_total += sub
             lineas.append((pid, cant, precio_unit, sub))
+
+        if stock_insuficiente:
+            flash('No hay suficiente stock para: ' + '; '.join(stock_insuficiente), 'danger')
+            return render_template('formulario_facturacion.html', form=form,
+                                    productos=obtener_productos_disponibles())
 
         if not lineas:
             flash('Debes seleccionar al menos un producto con cantidad válida.', 'danger')
@@ -471,13 +485,18 @@ def nueva_facturacion():
             (form.numero.data, form.cliente_id.data, form.mesa.data, round(subtotal_total, 2),
              iva_total, total_general, form.metodo_pago.data, form.estado.data, form.fecha.data)
         )
-        factura_id = cursor.fetchone()[0]
+        factura_id = cursor.fetchone()['id']
 
         for pid, cant, precio_unit, sub in lineas:
             cursor.execute(
                 'INSERT INTO detalle_factura (factura_id, producto_id, cantidad, precio_unitario, subtotal) '
                 'VALUES (%s, %s, %s, %s, %s)',
                 (factura_id, pid, cant, precio_unit, sub)
+            )
+            # Descuenta la cantidad facturada del stock/producción diaria del producto
+            cursor.execute(
+                'UPDATE productos SET produccion_diaria = produccion_diaria - %s WHERE id = %s',
+                (cant, pid)
             )
         conn.commit()
         cursor.close()
