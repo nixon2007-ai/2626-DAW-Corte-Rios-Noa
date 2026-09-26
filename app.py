@@ -127,7 +127,7 @@ def panel():
 @login_required
 def productos():
     conn = get_conexion()
-    cursor = conn.cursor(dictionary=True) if hasattr(conn, 'cursor') else conn.cursor()
+    cursor = conn.cursor()
     cursor.execute('''
         SELECT p.*, pr.empresa AS proveedor_nombre
         FROM productos p
@@ -171,7 +171,7 @@ def nuevo_producto():
 @login_required
 def editar_producto(id):
     conn = get_conexion()
-    cursor = conn.cursor(dictionary=True) if hasattr(conn, 'cursor') else conn.cursor()
+    cursor = conn.cursor()
     cursor.execute('SELECT * FROM productos WHERE id = %s', (id,))
     producto = cursor.fetchone()
     cursor.close()
@@ -226,7 +226,7 @@ def eliminar_producto(id):
 @login_required
 def clientes():
     conn = get_conexion()
-    cursor = conn.cursor(dictionary=True) if hasattr(conn, 'cursor') else conn.cursor()
+    cursor = conn.cursor()
     cursor.execute('SELECT * FROM clientes ORDER BY id')
     filas = cursor.fetchall()
     cursor.close()
@@ -398,7 +398,7 @@ def eliminar_proveedor(id):
 
 def obtener_productos_disponibles():
     conn = get_conexion()
-    cursor = conn.cursor(dictionary=True) if hasattr(conn, 'cursor') else conn.cursor()
+    cursor = conn.cursor()
     cursor.execute("SELECT id, nombre, precio FROM productos WHERE estado = 'Disponible' ORDER BY nombre")
     filas = cursor.fetchall()
     cursor.close()
@@ -410,7 +410,7 @@ def obtener_productos_disponibles():
 @login_required
 def facturacion():
     conn = get_conexion()
-    cursor = conn.cursor(dictionary=True) if hasattr(conn, 'cursor') else conn.cursor()
+    cursor = conn.cursor()
     cursor.execute('''
         SELECT f.*, c.nombre AS cliente_nombre, c.cedula AS cliente_cedula
         FROM facturas f
@@ -443,7 +443,7 @@ def nueva_facturacion():
             if cant <= 0:
                 continue
             conn = get_conexion()
-            cursor = conn.cursor(dictionary=True) if hasattr(conn, 'cursor') else conn.cursor()
+            cursor = conn.cursor()
             cursor.execute('SELECT precio FROM productos WHERE id = %s', (pid,))
             row = cursor.fetchone()
             cursor.close()
@@ -492,7 +492,7 @@ def nueva_facturacion():
 @login_required
 def factura_pdf(id):
     conn = get_conexion()
-    cursor = conn.cursor(dictionary=True) if hasattr(conn, 'cursor') else conn.cursor()
+    cursor = conn.cursor()
     cursor.execute('''
         SELECT f.*, c.nombre AS cliente_nombre, c.cedula AS cliente_cedula
         FROM facturas f LEFT JOIN clientes c ON f.cliente_id = c.id
