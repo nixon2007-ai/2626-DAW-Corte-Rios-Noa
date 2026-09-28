@@ -15,6 +15,9 @@ from io import BytesIO
 from werkzeug.utils import secure_filename
 from xhtml2pdf import pisa
 from flask import Response
+from flask import jsonify
+import smtplib
+from email.message import EmailMessage
 
 from models import obtener_usuario_por_id, obtener_usuario_por_nombre
 from forms.login_form import LoginForm
@@ -555,6 +558,63 @@ def factura_pdf(id):
         mimetype='application/pdf',
         headers={'Content-Disposition': f'attachment; filename=factura_{factura["numero"]}.pdf'}
     )
+
+# ---------------------------------------------------------------------------
+# FORMULARIO DE CONTACTO (envia el mensaje por correo)
+# ---------------------------------------------------------------------------
+
+MAIL_DESTINO = os.environ.get('MAIL_DESTINO', 'maryselvadaw@gmail.com')
+MAIL_USER = os.environ.get('MAIL_USER', '')
+MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD', '')
+
+
+def _limpiar(texto, maximo):
+    """Quita saltos de linea (evita inyeccion de cabeceras) y limita el largo."""
+    return ' '.join((texto or '').split())[:maximo]
+
+
+@app.route('/contacto/enviar', methods=['POST'])
+def enviar_contacto():
+    datos = request.get_json(silent=True) or {}
+    nombre = _limpiar(datos.get('nombre'), 100)
+    correo = _limpiar(datos.get('correo'), 120)
+    asunto = _limpiar(datos.get('asunto'), 150)
+    categoria = _limpiar(datos.get('categoria'), 30)
+    mensaje = (datos.get('mensaje') or '').strip()[:3000]
+
+    if (len(nombre) < 3 or '@' not in correo or '.' not in correo.split('@')[-1]
+            or not asunto or not categoria or len(mensaje) < 5):
+        return jsonify(ok=False, error='Datos incompletos o invalidos.'), 400
+
+    if not MAIL_USER or not MAIL_PASSWORD:
+        app.logger.error('Faltan MAIL_USER / MAIL_PASSWORD en las variables de entorno.')
+        return jsonify(ok=False, error='El envio de correo no esta configurado.'), 500
+
+    msg = EmailMessage()
+    msg['Subject'] = f'[Web - {categoria}] {asunto}'
+    msg['From'] = MAIL_USER
+    msg['To'] = MAIL_DESTINO
+    msg['Reply-To'] = correo
+    msg.set_content(
+        f'Nuevo mensaje desde el formulario de contacto\n'
+        f'{"-" * 45}\n'
+        f'Nombre:    {nombre}\n'
+        f'Correo:    {correo}\n'
+        f'Categoria: {categoria}\n'
+        f'Asunto:    {asunto}\n\n'
+        f'Mensaje:\n{mensaje}\n'
+    )
+
+    try:
+        with smtplib.SMTP('smtp.gmail.com', 587, timeout=15) as smtp:
+            smtp.starttls()
+            smtp.login(MAIL_USER, MAIL_PASSWORD)
+            smtp.send_message(msg)
+    except Exception:
+        app.logger.exception('No se pudo enviar el correo de contacto')
+        return jsonify(ok=False, error='No se pudo enviar el mensaje. Intenta mas tarde.'), 502
+
+    return jsonify(ok=True)
 
 if __name__ == '__main__':
     app.run(debug=True)

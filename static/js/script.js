@@ -251,48 +251,63 @@ document.addEventListener("DOMContentLoaded", () => {
     mensaje.addEventListener("input", validarMensaje);
     categoria.addEventListener("change", validarCategoria);
 
-    // ENVÍO DEL FORMULARIO
-    formulario.addEventListener("submit", function (e) {
+    // ENVÍO DEL FORMULARIO (manda el mensaje al correo del gastrobar)
+    const btnEnviar = formulario.querySelector('button[type="submit"]');
+
+    function mostrarAlerta(tipo, texto) {
+        mensajeGeneral.innerHTML = "";
+        const div = document.createElement("div");
+        div.className = "alert alert-" + tipo;
+        div.textContent = texto;
+        mensajeGeneral.appendChild(div);
+    }
+
+    formulario.addEventListener("submit", async function (e) {
         e.preventDefault();
-        if (
-            validarNombre() &&
-            validarCorreo() &&
-            validarAsunto() &&
-            validarMensaje() &&
-            validarCategoria()
-        ) {
 
-            registros.push({
-                nombre: nombre.value,
-                correo: correo.value,
-                asunto: asunto.value,
-                categoria: categoria.value
+        const valido = [validarNombre(), validarCorreo(), validarAsunto(),
+                        validarMensaje(), validarCategoria()].every(Boolean);
+        if (!valido) {
+            mostrarAlerta("danger", "Corrija los errores del formulario");
+            return;
+        }
+
+        const datos = {
+            nombre: nombre.value.trim(),
+            correo: correo.value.trim(),
+            asunto: asunto.value.trim(),
+            categoria: categoria.value,
+            mensaje: mensaje.value.trim()
+        };
+
+        btnEnviar.disabled = true;
+        btnEnviar.textContent = "Enviando...";
+
+        try {
+            const token = document.querySelector('meta[name="csrf-token"]').content;
+            const resp = await fetch("/contacto/enviar", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "X-CSRFToken": token },
+                body: JSON.stringify(datos)
             });
+            const resultado = await resp.json().catch(() => ({}));
 
-            contador.textContent = registros.length;
-            mensajeGeneral.innerHTML = `
-                <div class="alert alert-success">
-                    Registro exitoso
-                </div>
-            `;
-
-            formulario.reset();
-            nombre.classList.remove("is-valid");
-            correo.classList.remove("is-valid");
-            asunto.classList.remove("is-valid");
-            mensaje.classList.remove("is-valid");
-            categoria.classList.remove("is-valid");
-        } else {
-            mensajeGeneral.innerHTML = `
-                <div class="alert alert-danger">
-                    Corrija los errores del formulario
-                </div>
-            `;
+            if (resp.ok && resultado.ok) {
+                registros.push(datos);
+                contador.textContent = registros.length;
+                mostrarAlerta("success", "¡Mensaje enviado! Te responderemos pronto.");
+                formulario.reset();
+                [nombre, correo, asunto, mensaje, categoria].forEach(c => c.classList.remove("is-valid"));
+            } else {
+                mostrarAlerta("danger", resultado.error || "No se pudo enviar el mensaje.");
+            }
+        } catch (err) {
+            mostrarAlerta("danger", "Error de conexión. Intenta de nuevo.");
+        } finally {
+            btnEnviar.disabled = false;
+            btnEnviar.textContent = "Enviar Mensaje";
         }
     });
-
-});
-
 // BOTÓN VOLVER ARRIBA
 const boton = document.getElementById("btnArriba");
 window.addEventListener("scroll", () => {
