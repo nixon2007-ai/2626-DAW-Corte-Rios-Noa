@@ -251,7 +251,7 @@ document.addEventListener("DOMContentLoaded", () => {
     mensaje.addEventListener("input", validarMensaje);
     categoria.addEventListener("change", validarCategoria);
 
-    // ENVÍO DEL FORMULARIO (manda el mensaje al correo del gastrobar)
+    // ENVÍO DEL FORMULARIO (llega al correo con FormSubmit)
     const btnEnviar = formulario.querySelector('button[type="submit"]');
 
     function mostrarAlerta(tipo, texto) {
@@ -273,33 +273,35 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const datos = {
-            nombre: nombre.value.trim(),
-            correo: correo.value.trim(),
-            asunto: asunto.value.trim(),
-            categoria: categoria.value,
-            mensaje: mensaje.value.trim()
+            name: nombre.value.trim(),
+            email: correo.value.trim(),
+            Asunto: asunto.value.trim(),
+            Categoria: categoria.value,
+            message: mensaje.value.trim(),
+            _subject: "Nuevo mensaje web: " + asunto.value.trim(),
+            _template: "table",
+            _captcha: "false"
         };
 
         btnEnviar.disabled = true;
         btnEnviar.textContent = "Enviando...";
 
         try {
-            const token = document.querySelector('meta[name="csrf-token"]').content;
-            const resp = await fetch("/contacto/enviar", {
+            const resp = await fetch("https://formsubmit.co/ajax/maryselvadaw@gmail.com", {
                 method: "POST",
-                headers: { "Content-Type": "application/json", "X-CSRFToken": token },
+                headers: { "Content-Type": "application/json", "Accept": "application/json" },
                 body: JSON.stringify(datos)
             });
             const resultado = await resp.json().catch(() => ({}));
 
-            if (resp.ok && resultado.ok) {
+            if (resp.ok && (resultado.success === true || resultado.success === "true")) {
                 registros.push(datos);
                 contador.textContent = registros.length;
                 mostrarAlerta("success", "¡Mensaje enviado! Te responderemos pronto.");
                 formulario.reset();
                 [nombre, correo, asunto, mensaje, categoria].forEach(c => c.classList.remove("is-valid"));
             } else {
-                mostrarAlerta("danger", resultado.error || "No se pudo enviar el mensaje.");
+                mostrarAlerta("danger", "No se pudo enviar el mensaje. Intenta de nuevo.");
             }
         } catch (err) {
             mostrarAlerta("danger", "Error de conexión. Intenta de nuevo.");
@@ -308,6 +310,7 @@ document.addEventListener("DOMContentLoaded", () => {
             btnEnviar.textContent = "Enviar Mensaje";
         }
     });
+
 // BOTÓN VOLVER ARRIBA
 const boton = document.getElementById("btnArriba");
 window.addEventListener("scroll", () => {
