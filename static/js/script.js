@@ -326,3 +326,26 @@ boton.addEventListener("click", () => {
         behavior: "smooth"
     });
 });
+        } finally {
+            btnEnviar.disabled = false;
+            btnEnviar.textContent = "Enviar Mensaje";
+        }
+    });
+
+});   // <-- AGREGA ESTO (cierra el DOMContentLoaded)
+
+// BOTÓN VOLVER ARRIBA
+const boton = document.getElementById("btnArriba");
+window.addEventListener("scroll", () => {
+    if (window.scrollY > 300) {
+        boton.style.display = "block";
+    } else {
+        boton.style.display = "none";
+    }
+});
+boton.addEventListener("click", () => {
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+});
