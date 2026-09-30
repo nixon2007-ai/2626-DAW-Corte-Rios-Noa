@@ -612,42 +612,92 @@
     <hr style="border: none; height: 3px; background-color: #808080;">
 
     <!-- CONTACTO -->
-              <form class="order-form" action="https://formsubmit.co/maryselvadaw@gmail.com" method="POST" id="orderForm">
+             
+<section id="contacto" class="container py-5">
+    <h2 class="text-center mb-4"><strong>Contáctanos</strong></h2>
 
-    <section id="contacto" class="container py-5">
-        <h2 class="text-center mb-4"><strong>Contáctanos</strong></h2>
-        <div class="row">
-            <div class="col-md-6">
-                <form id="formContacto">
-                    <div id="mensajeGeneral"></div>
-                    <div class="mb-3">
-                        <input type="text" id="nombre" name="Nombre" class="form-control" placeholder="Nombre">
-                        <div id="errorNombre" class="text-danger"></div>
-                    </div>
-                    <div class="mb-3">
-                        <input type="email" id="correo" name="Correo" class="form-control" placeholder="Correo Electrónico">
-                        <div id="errorCorreo" class="text-danger"></div>
-                    </div>
-                    <div class="mb-3">
-                        <input type="text" id="asunto" name="Asunto" class="form-control" placeholder="Asunto">
-                        <div id="errorAsunto" class="text-danger"></div>
-                    </div>
-                    <div class="mb-3">
-                        <select id="categoria" class="form-select">
-                            <option value="">Seleccione una categoría</option>
-                            <option>Reserva</option>
-                            <option>Consulta</option>
-                            <option>Sugerencia</option>
-                        </select>
-                        <div id="errorCategoria" class="text-danger"></div>
-                    </div>
-                    <div class="mb-3">
-                        <textarea id="mensaje" name="Mensaje" class="form-control" rows="5" placeholder="Mensaje"></textarea>
-                        <div id="errorMensaje" class="text-danger"></div>
-                    </div>
-                          <i><p class="form-hint">Al enviar, la información llegará directo a nuestro correo para procesar tu pedido.</p></i>
-                    <button type="submit" class="btn btn-success">Enviar Mensaje</button>   
-                </form>
+    <div class="row">
+        <div class="col-md-6">
+
+            <form class="order-form"
+                  action="https://formsubmit.co/maryselvadaw@gmail.com"
+                  method="POST"
+                  id="formContacto">
+
+                <!-- Configuración de FormSubmit -->
+                <input type="hidden" name="_subject"
+                       value="Nuevo mensaje - Mar & Selva Gastrobar">
+
+                <input type="hidden" name="_template"
+                       value="table">
+
+                <div id="mensajeGeneral"></div>
+
+                <div class="mb-3">
+                    <input type="text" id="nombre"
+                           name="Nombre"
+                           class="form-control"
+                           placeholder="Nombre completo"
+                           required>
+                    <div id="errorNombre" class="text-danger"></div>
+                </div>
+
+                <div class="mb-3">
+                    <input type="email" id="correo"
+                           name="Correo"
+                           class="form-control"
+                           placeholder="Correo electrónico"
+                           required>
+                    <div id="errorCorreo" class="text-danger"></div>
+                </div>
+
+                <div class="mb-3">
+                    <input type="text" id="asunto"
+                           name="Asunto"
+                           class="form-control"
+                           placeholder="Asunto"
+                           required>
+                    <div id="errorAsunto" class="text-danger"></div>
+                </div>
+
+                <div class="mb-3">
+                    <select id="categoria"
+                            name="Categoría"
+                            class="form-select"
+                            required>
+                        <option value="">Seleccione una categoría</option>
+                        <option value="Reserva">Reserva</option>
+                        <option value="Consulta">Consulta</option>
+                        <option value="Sugerencia">Sugerencia</option>
+                    </select>
+                    <div id="errorCategoria" class="text-danger"></div>
+                </div>
+
+                <div class="mb-3">
+                    <textarea id="mensaje"
+                              name="Mensaje"
+                              class="form-control"
+                              rows="5"
+                              placeholder="Escribe tu mensaje"
+                              required></textarea>
+                    <div id="errorMensaje" class="text-danger"></div>
+                </div>
+
+                <i>
+                    <p class="form-hint">
+                        Al enviar, la información llegará a nuestro
+                        correo para procesar tu solicitud.
+                    </p>
+                </i>
+
+                <button type="submit" class="btn btn-success">
+                    Enviar mensaje
+                </button>
+
+            </form>
+        </div>
+    </div>
+</section>
                 <div id="listaRegistros"></div>
             </div>
 
