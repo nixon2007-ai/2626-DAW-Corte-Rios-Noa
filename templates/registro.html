@@ -1,21 +1,31 @@
+
 {% extends "base.html" %}
 
 {% block titulo %}Registro de Usuario{% endblock %}
 
 {% block content %}
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 <section class="login-section py-5">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-5">
                 <div class="card shadow login-card">
                     <div class="card-body p-4">
-                        <h2 class="text-center mb-2"><strong>Crear Usuario</strong></h2>
-                        <p class="text-center text-muted mb-4">Acceso al panel interno</p>
+
+                        <h2 class="text-center mb-2">
+                            <strong>Crear Usuario</strong>
+                        </h2>
+                        <p class="text-center text-muted mb-4">
+                            Acceso al panel interno
+                        </p>
 
                         {% with messages = get_flashed_messages(with_categories=true) %}
                             {% if messages %}
                                 {% for categoria, mensaje in messages %}
-                                <div class="alert alert-{{ categoria }}">{{ mensaje }}</div>
+                                    <div class="alert alert-{{ categoria }}">
+                                        {{ mensaje }}
+                                    </div>
                                 {% endfor %}
                             {% endif %}
                         {% endwith %}
@@ -27,7 +37,7 @@
                                 {{ form.usuario.label(class="form-label fw-bold") }}
                                 {{ form.usuario(class="form-control" + (" is-invalid" if form.usuario.errors else "")) }}
                                 {% for error in form.usuario.errors %}
-                                <div class="invalid-feedback">{{ error }}</div>
+                                    <div class="invalid-feedback">{{ error }}</div>
                                 {% endfor %}
                             </div>
 
@@ -35,7 +45,7 @@
                                 {{ form.password.label(class="form-label fw-bold") }}
                                 {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), autocomplete="new-password") }}
                                 {% for error in form.password.errors %}
-                                <div class="text-danger small">{{ error }}</div>
+                                    <div class="text-danger small">{{ error }}</div>
                                 {% endfor %}
                             </div>
 
@@ -43,19 +53,26 @@
                                 {{ form.confirmar.label(class="form-label fw-bold") }}
                                 {{ form.confirmar(class="form-control" + (" is-invalid" if form.confirmar.errors else ""), autocomplete="new-password") }}
                                 {% for error in form.confirmar.errors %}
-                                <div class="invalid-feedback">{{ error }}</div>
+                                    <div class="invalid-feedback">{{ error }}</div>
                                 {% endfor %}
                             </div>
-        <!-- CAPTCHA -->
-        <div class="g-recaptcha"
-             data-sitekey="TU_CLAVE_DEL_SITIO">
-        </div>
+
+                            <!-- Google reCAPTCHA -->
+                            <div class="mb-3">
+                                <div class="g-recaptcha"
+                                     data-sitekey="TU_CLAVE_DEL_SITIO">
+                                </div>
+                            </div>
+
                             {{ form.submit(class="btn btn-login w-100 fw-bold") }}
                         </form>
 
                         <div class="text-center mt-3">
-                            <a href="{{ url_for('login') }}" class="link-volver">← Ya tengo cuenta, iniciar sesión</a>
+                            <a href="{{ url_for('login') }}" class="link-volver">
+                                ← Ya tengo cuenta, iniciar sesión
+                            </a>
                         </div>
+
                     </div>
                 </div>
             </div>
