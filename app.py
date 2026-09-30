@@ -29,6 +29,11 @@ from werkzeug.utils import secure_filename
 from xhtml2pdf import pisa
 import random
 from psycopg2.extras import RealDictCursor
+import os
+
+RECAPTCHA_SECRET_KEY = os.environ.get(
+    "RECAPTCHA_SECRET_KEY"
+)
 
 app = Flask(__name__)
 
