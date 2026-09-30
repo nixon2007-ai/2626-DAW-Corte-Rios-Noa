@@ -1,88 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    // FORMULARIO DE LOGIN (Ingresar al Sistema)
-    const formLogin = document.getElementById("formLogin");
-
-    if (formLogin) {
-        const usuario = document.getElementById("usuario");
-        const contrasena = document.getElementById("contrasena");
-        const mensajeLogin = document.getElementById("mensajeLogin");
-
-        // Usuarios y contraseñas de prueba (demostrativos, sin base de datos)
-        const USUARIOS_VALIDOS = [
-            { usuario: "yg.noai@maryselva.ec", contrasena: "yg.noai" },
-            { usuario: "nd.cortes@maryselva.ec", contrasena: "nd.cortes" },
-            { usuario: "sb.riosv@maryselva.ec", contrasena: "sb.riosv" }
-        ];
-
-        formLogin.addEventListener("submit", function (e) {
-            e.preventDefault();
-
-            document.getElementById("errorUsuario").textContent = "";
-            document.getElementById("errorContrasena").textContent = "";
-
-            let valido = true;
-
-            if (usuario.value.trim() === "") {
-                document.getElementById("errorUsuario").textContent = "Ingrese su usuario";
-                valido = false;
-            }
-
-            if (contrasena.value.trim() === "") {
-                document.getElementById("errorContrasena").textContent = "Ingrese su contraseña";
-                valido = false;
-            }
-
-            if (!valido) {
-                return;
-            }
-
-            const coincide = USUARIOS_VALIDOS.some(
-                u => u.usuario === usuario.value && u.contrasena === contrasena.value
-            );
-
-            if (coincide) {
-                sessionStorage.setItem("sesionActiva", "true");
-                sessionStorage.setItem("usuarioActivo", usuario.value);
-
-                mensajeLogin.innerHTML = `
-                    <div class="alert alert-success">
-                        Acceso correcto. Ingresando al panel...
-                    </div>
-                `;
-                setTimeout(() => {
-                    window.location.href = "/panel";
-                }, 800);
-            } else {
-                mensajeLogin.innerHTML = `
-                    <div class="alert alert-danger">
-                        Usuario o contraseña inválida.
-                    </div>
-                `;
-            }
-        });
-    }
-
-    // PROTECCIÓN Y CIERRE DE SESIÓN DEL PANEL
-    const nombreUsuario = document.getElementById("nombreUsuario");
-    const btnCerrarSesion = document.getElementById("btnCerrarSesion");
-
-    if (btnCerrarSesion) {
-        // Si no hay sesión activa, no deja ver el panel y regresa al login
-        if (sessionStorage.getItem("sesionActiva") !== "true") {
-            window.location.href = "/login";
-        } else {
-            nombreUsuario.textContent = sessionStorage.getItem("usuarioActivo");
-        }
-
-        btnCerrarSesion.addEventListener("click", () => {
-            sessionStorage.removeItem("sesionActiva");
-            sessionStorage.removeItem("usuarioActivo");
-            window.location.href = "/";
-        });
-    }
-
+    // =====================================================
     // MENÚ DE ACCESIBILIDAD
+    // =====================================================
     const btnAccesibilidad = document.getElementById("btnAccesibilidad");
     const menuAccesibilidad = document.getElementById("menuAccesibilidad");
     let tamanoTexto = 100; // porcentaje inicial
@@ -94,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Cierra el menú si se hace clic afuera
         document.addEventListener("click", (e) => {
-            if (!menuAccesibilidad.contains(e.target) && e.target !== btnAccesibilidad && !btnAccesibilidad.contains(e.target)) {
+            if (!menuAccesibilidad.contains(e.target) && !btnAccesibilidad.contains(e.target)) {
                 menuAccesibilidad.classList.add("d-none");
             }
         });
@@ -107,16 +27,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     tamanoTexto = Math.min(tamanoTexto + 10, 150);
                     document.documentElement.style.fontSize = tamanoTexto + "%";
                 }
-
                 if (accion === "reducir") {
                     tamanoTexto = Math.max(tamanoTexto - 10, 80);
                     document.documentElement.style.fontSize = tamanoTexto + "%";
                 }
-
                 if (accion === "contraste") {
                     document.body.classList.toggle("alto-contraste");
                 }
-
                 if (accion === "restablecer") {
                     tamanoTexto = 100;
                     document.documentElement.style.fontSize = "100%";
@@ -126,133 +43,77 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // =====================================================
     // SCROLL SUAVE DEL MENÚ
-    const enlaces = document.querySelectorAll('a[href^="#"]');
-
-    enlaces.forEach(enlace => {
+    // =====================================================
+    document.querySelectorAll('a[href*="#"]').forEach(enlace => {
         enlace.addEventListener("click", function (e) {
-            const destino = document.querySelector(this.getAttribute("href"));
-
+            const url = new URL(this.href, window.location.origin);
+            // Solo si el ancla es de la página actual
+            if (url.pathname !== window.location.pathname || !url.hash) return;
+            const destino = document.querySelector(url.hash);
             if (destino) {
                 e.preventDefault();
-                destino.scrollIntoView({
-                    behavior: "smooth"
-                });
+                destino.scrollIntoView({ behavior: "smooth" });
             }
         });
     });
 
-    // CAMBIAR SOMBRA DEL NAVBAR
+    // =====================================================
+    // SOMBRA DEL NAVBAR AL HACER SCROLL
+    // =====================================================
     const navbar = document.querySelector(".navbar");
-    window.addEventListener("scroll", () => {
-        if (window.scrollY > 100) {
-            navbar.classList.add("shadow");
-        } else {
-            navbar.classList.remove("shadow");
-        }
-    });
+    if (navbar) {
+        window.addEventListener("scroll", () => {
+            navbar.classList.toggle("shadow", window.scrollY > 100);
+        });
+    }
 
-    // FORMULARIO
+    // =====================================================
+    // BOTÓN VOLVER ARRIBA
+    // =====================================================
+    const botonArriba = document.getElementById("btnArriba");
+    if (botonArriba) {
+        window.addEventListener("scroll", () => {
+            botonArriba.style.display = window.scrollY > 300 ? "block" : "none";
+        });
+        botonArriba.addEventListener("click", () => {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    }
+
+    // =====================================================
+    // FORMULARIO DE CONTACTO (solo existe en la página de inicio)
+    // =====================================================
     const formulario = document.getElementById("formContacto");
+    if (!formulario) return;
+
     const nombre = document.getElementById("nombre");
     const correo = document.getElementById("correo");
     const asunto = document.getElementById("asunto");
     const mensaje = document.getElementById("mensaje");
     const categoria = document.getElementById("categoria");
-    const contador = document.getElementById("contador");
     const mensajeGeneral = document.getElementById("mensajeGeneral");
-    let registros = [];
+    const btnEnviar = formulario.querySelector('button[type="submit"]');
 
-    // VALIDAR NOMBRE
-    function validarNombre() {
-        if (nombre.value.trim().length < 3) {
-            nombre.classList.add("is-invalid");
-            nombre.classList.remove("is-valid");
-            document.getElementById("errorNombre").textContent =
-                "Mínimo 3 caracteres";
-            return false;
-        }
-
-        nombre.classList.add("is-valid");
-        nombre.classList.remove("is-invalid");
-        document.getElementById("errorNombre").textContent = "";
-        return true;
+    function marcar(campo, idError, ok, textoError) {
+        campo.classList.toggle("is-valid", ok);
+        campo.classList.toggle("is-invalid", !ok);
+        document.getElementById(idError).textContent = ok ? "" : textoError;
+        return ok;
     }
 
-    // VALIDAR CORREO
-    function validarCorreo() {
-        const expresion = /\S+@\S+\.\S+/;
-        if (!expresion.test(correo.value)) {
-            correo.classList.add("is-invalid");
-            correo.classList.remove("is-valid");
-            document.getElementById("errorCorreo").textContent =
-                "Correo inválido";
-            return false;
-        }
+    const validarNombre = () => marcar(nombre, "errorNombre", nombre.value.trim().length >= 3, "Mínimo 3 caracteres");
+    const validarCorreo = () => marcar(correo, "errorCorreo", /\S+@\S+\.\S+/.test(correo.value), "Correo inválido");
+    const validarAsunto = () => marcar(asunto, "errorAsunto", asunto.value.trim().length >= 5, "Mínimo 5 caracteres");
+    const validarMensaje = () => marcar(mensaje, "errorMensaje", mensaje.value.trim().length >= 10, "Mínimo 10 caracteres");
+    const validarCategoria = () => marcar(categoria, "errorCategoria", categoria.value !== "", "Seleccione una categoría");
 
-        correo.classList.add("is-valid");
-        correo.classList.remove("is-invalid");
-        document.getElementById("errorCorreo").textContent = "";
-        return true;
-    }
-
-    // VALIDAR ASUNTO
-    function validarAsunto() {
-        if (asunto.value.trim().length < 5) {
-            asunto.classList.add("is-invalid");
-            asunto.classList.remove("is-valid");
-            document.getElementById("errorAsunto").textContent =
-                "Mínimo 5 caracteres";
-            return false;
-        }
-
-        asunto.classList.add("is-valid");
-        asunto.classList.remove("is-invalid");
-        document.getElementById("errorAsunto").textContent = "";
-        return true;
-    }
-
-    // VALIDAR MENSAJE
-    function validarMensaje() {
-        if (mensaje.value.trim().length < 10) {
-            mensaje.classList.add("is-invalid");
-            mensaje.classList.remove("is-valid");
-            document.getElementById("errorMensaje").textContent =
-                "Mínimo 10 caracteres";
-            return false;
-        }
-
-        mensaje.classList.add("is-valid");
-        mensaje.classList.remove("is-invalid");
-        document.getElementById("errorMensaje").textContent = "";
-        return true;
-    }
-
-    // VALIDAR CATEGORÍA
-    function validarCategoria() {
-        if (categoria.value === "") {
-            categoria.classList.add("is-invalid");
-            categoria.classList.remove("is-valid");
-            document.getElementById("errorCategoria").textContent =
-                "Seleccione una categoría";
-            return false;
-        }
-
-        categoria.classList.remove("is-invalid");
-        categoria.classList.add("is-valid");
-        document.getElementById("errorCategoria").textContent = "";
-        return true;
-    }
-
-    // VALIDACIONES EN TIEMPO REAL
     nombre.addEventListener("input", validarNombre);
     correo.addEventListener("input", validarCorreo);
     asunto.addEventListener("input", validarAsunto);
     mensaje.addEventListener("input", validarMensaje);
     categoria.addEventListener("change", validarCategoria);
-
-    // ENVÍO DEL FORMULARIO (llega al correo con FormSubmit)
-    const btnEnviar = formulario.querySelector('button[type="submit"]');
 
     function mostrarAlerta(tipo, texto) {
         mensajeGeneral.innerHTML = "";
@@ -295,8 +156,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const resultado = await resp.json().catch(() => ({}));
 
             if (resp.ok && (resultado.success === true || resultado.success === "true")) {
-                registros.push(datos);
-                contador.textContent = registros.length;
                 mostrarAlerta("success", "¡Mensaje enviado! Te responderemos pronto.");
                 formulario.reset();
                 [nombre, correo, asunto, mensaje, categoria].forEach(c => c.classList.remove("is-valid"));
@@ -311,41 +170,4 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-// BOTÓN VOLVER ARRIBA
-const boton = document.getElementById("btnArriba");
-window.addEventListener("scroll", () => {
-    if (window.scrollY > 300) {
-        boton.style.display = "block";
-    } else {
-        boton.style.display = "none";
-    }
-});
-boton.addEventListener("click", () => {
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-});
-        } finally {
-            btnEnviar.disabled = false;
-            btnEnviar.textContent = "Enviar Mensaje";
-        }
-    });
-
-});   // <-- AGREGA ESTO (cierra el DOMContentLoaded)
-
-// BOTÓN VOLVER ARRIBA
-const boton = document.getElementById("btnArriba");
-window.addEventListener("scroll", () => {
-    if (window.scrollY > 300) {
-        boton.style.display = "block";
-    } else {
-        boton.style.display = "none";
-    }
-});
-boton.addEventListener("click", () => {
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
 });
