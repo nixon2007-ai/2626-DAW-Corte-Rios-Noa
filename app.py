@@ -35,6 +35,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'mar-y-selva-gastrobar-clave-secreta-2026'
 csrf = CSRFProtect(app)
 
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'

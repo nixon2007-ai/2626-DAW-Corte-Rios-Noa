@@ -33,15 +33,15 @@
 
                             <div class="mb-3">
                                 {{ form.password.label(class="form-label fw-bold") }}
-                                {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else "")) }}
+                                {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), autocomplete="new-password") }}
                                 {% for error in form.password.errors %}
-                                <div class="invalid-feedback">{{ error }}</div>
+                                <div class="text-danger small">{{ error }}</div>
                                 {% endfor %}
                             </div>
 
                             <div class="mb-3">
                                 {{ form.confirmar.label(class="form-label fw-bold") }}
-                                {{ form.confirmar(class="form-control" + (" is-invalid" if form.confirmar.errors else "")) }}
+                                {{ form.confirmar(class="form-control" + (" is-invalid" if form.confirmar.errors else ""), autocomplete="new-password") }}
                                 {% for error in form.confirmar.errors %}
                                 <div class="invalid-feedback">{{ error }}</div>
                                 {% endfor %}
@@ -49,9 +49,6 @@
 
                             {{ form.submit(class="btn btn-login w-100 fw-bold") }}
                         </form>
-                        <div class="text-center mt-3">
-    <a href="{{ url_for('registro') }}" class="link-volver">¿No tienes cuenta? Regístrate aquí</a>
-</div>
 
                         <div class="text-center mt-3">
                             <a href="{{ url_for('login') }}" class="link-volver">← Ya tengo cuenta, iniciar sesión</a>
