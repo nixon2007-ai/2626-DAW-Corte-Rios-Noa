@@ -62,8 +62,9 @@
         <strong>Ingresar al Sistema</strong>
     </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="menuSistema">
-        <li><a class="dropdown-item" href="{{ url_for('login') }}">Iniciar Sesión</a></li>
-    </ul>
+    <li><a class="dropdown-item" href="{{ url_for('login') }}">Iniciar Sesión</a></li>
+    <li><a class="dropdown-item" href="{{ url_for('registro') }}">Registrarse</a></li>
+</ul>
 </li>
 {% endif %}
 
