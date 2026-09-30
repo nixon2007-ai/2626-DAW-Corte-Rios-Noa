@@ -148,11 +148,15 @@ document.addEventListener("DOMContentLoaded", () => {
         btnEnviar.textContent = "Enviando...";
 
         try {
+                       const control = new AbortController();
+            const temporizador = setTimeout(() => control.abort(), 20000);
             const resp = await fetch("https://formsubmit.co/ajax/maryselvadaw@gmail.com", {
                 method: "POST",
                 headers: { "Content-Type": "application/json", "Accept": "application/json" },
-                body: JSON.stringify(datos)
+                body: JSON.stringify(datos),
+                signal: control.signal
             });
+            clearTimeout(temporizador);
             const resultado = await resp.json().catch(() => ({}));
 
             if (resp.ok && (resultado.success === true || resultado.success === "true")) {
