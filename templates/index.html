@@ -613,150 +613,39 @@
 
   
 <!-- CONTACTO -->
-<section id="contacto" class="container py-5">
-    <h2 class="text-center mb-4">
-        <strong>Contáctanos</strong>
-    </h2>
+<form class="order-form" action="https://formsubmit.co/maryselvadaw@gmail.com" method="POST" id="orderForm">
 
-    <div class="row">
-        <!-- FORMULARIO DE CONTACTO -->
-        <div class="col-md-6">
-            <form class="order-form"
-                  action="https://formsubmit.co/maryselvadaw@gmail.com"
-                  method="POST"
-                  id="formContacto">
+    <section id="contacto" class="container py-5">
+        <h2 class="text-center mb-4"><strong>Contáctanos</strong></h2>
 
-                <!-- Configuración de FormSubmit -->
-                <input type="hidden" name="_subject"
-                       value="Nuevo mensaje - Mar & Selva Gastrobar">
+        <div class="row">
 
-                <input type="hidden" name="_template"
-                       value="table">
+            <div class="col-md-6">
+                <form id="formContacto">
 
-                <input type="hidden" name="_captcha"
-                       value="true">
+                    <div id="mensajeGeneral"></div>
 
-                <!-- Mensaje general -->
-                <div id="mensajeGeneral"></div>
+                    <div class="mb-3">
+                        <input type="text" id="nombre" name="Nombre" class="form-control" placeholder="Nombre">
+                        <div id="errorNombre" class="text-danger"></div>
+                    </div>
 
-                <!-- Nombre -->
-                <div class="mb-3">
-                    <input type="text"
-                           id="nombre"
-                           name="Nombre"
-                           class="form-control"
-                           placeholder="Nombre completo"
-                           required>
-                    <div id="errorNombre" class="text-danger"></div>
-                </div>
+                    <div class="mb-3">
+                        <input type="email" id="correo" name="Correo" class="form-control" placeholder="Correo Electrónico">
+                        <div id="errorCorreo" class="text-danger"></div>
+                    </div>
 
-                <!-- Correo electrónico -->
-                <div class="mb-3">
-                    <input type="email"
-                           id="correo"
-                           name="Correo"
-                           class="form-control"
-                           placeholder="Correo Electrónico"
-                           required>
-                    <div id="errorCorreo" class="text-danger"></div>
-                </div>
+                    <div class="mb-3">
+                        <input type="text" id="asunto" name="Asunto" class="form-control" placeholder="Asunto">
+                        <div id="errorAsunto" class="text-danger"></div>
+                    </div>
 
-                <!-- Asunto -->
-                <div class="mb-3">
-                    <input type="text"
-                           id="asunto"
-                           name="Asunto"
-                           class="form-control"
-                           placeholder="Asunto"
-                           required>
-                    <div id="errorAsunto" class="text-danger"></div>
-                </div>
-
-                <!-- Categoría -->
-                <div class="mb-3">
-                    <select id="categoria"
-                            name="Categoría"
-                            class="form-select"
-                            required>
-                        <option value="">Seleccione una categoría</option>
-                        <option value="Reserva">Reserva</option>
-                        <option value="Consulta">Consulta</option>
-                        <option value="Sugerencia">Sugerencia</option>
-                    </select>
-                    <div id="errorCategoria" class="text-danger"></div>
-                </div>
-
-                <!-- Mensaje -->
-                <div class="mb-3">
-                    <textarea id="mensaje"
-                              name="Mensaje"
-                              class="form-control"
-                              rows="5"
-                              placeholder="Escribe tu mensaje"
-                              required></textarea>
-                    <div id="errorMensaje" class="text-danger"></div>
-                </div>
-
-                <!-- Información -->
-                <i>
-                    <p class="form-hint">
-                        Al enviar, la información llegará directamente
-                        a nuestro correo para procesar tu solicitud.
-                    </p>
-                </i>
-
-                <!-- Botón de envío -->
-                <button type="submit" class="btn btn-success">
-                    Enviar Mensaje
-                </button>
-
-            </form>
-
-            <div id="listaRegistros"></div>
-        </div>
-
-        <!-- INFORMACIÓN DEL NEGOCIO -->
-        <div class="col-md-6">
-            <h4><strong>Información</strong></h4>
-
-            <p>
-                <strong>Correo:</strong>
-                maryselvadaw@gmail.com
-            </p>
-
-            <p>
-                <strong>Teléfono:</strong>
-                0967282057 / 0987180148 / 0962616248
-            </p>
-
-            <p>
-                <strong>Dirección:</strong>
-                Machala - El Oro - Ecuador
-            </p>
-
-            <!-- Redes sociales -->
-            <a href="https://www.facebook.com/profile.php?id=61593243085513"
-               class="btn btn-primary m-1"
-               target="_blank"
-               rel="noopener noreferrer">
-                Facebook
-            </a>
-
-            <a href="https://www.instagram.com/maryselvadaw/"
-               class="btn btn-danger m-1"
-               target="_blank"
-               rel="noopener noreferrer">
-                Instagram
-            </a>
-
-            <a href="https://www.tiktok.com/@maryselva_oficial"
-               class="btn btn-dark m-1"
-               target="_blank"
-               rel="noopener noreferrer">
-                TikTok
-            </a>
-        </div>
-    </div>
-</section>
-
+                    <div class="mb-3">
+                        <select id="categoria" class="form-select">
+                            <option value="">Seleccione una categoría</option>
+                            <option>Reserva</option>
+                            <option>Consulta</option>
+                            <option>Sugerencia</option>
+                        </select>
+               
 {% endblock %}
